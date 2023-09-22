@@ -1,4 +1,5 @@
 from collections import defaultdict
+from utils.sorted_list import SortedList
 import json
 
 class Cluster:
@@ -34,10 +35,10 @@ class Dictionary:
     """
 
     def __init__(self) -> None:
-        self.vocabs = []
+        self.vocabs = SortedList()
 
     def add_vocab(self, vocab: Vocabulary) -> None:
-        self.vocabs.append(vocab)
+        self.vocabs.insort(vocab)
 
     def to_json(self, path) -> None:
         data = defaultdict(list)
