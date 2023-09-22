@@ -23,6 +23,12 @@ class Vocabulary:
         self.word = word
         self.clusters = []
 
+    def __gt__(self, other) -> bool:
+        return self.word > other.word
+
+    def __lt__(self, other) -> bool:
+        return self.word < other.word
+
     def add_cluster(self, cluster: Cluster) -> None:
         self.clusters.append(cluster)
 
