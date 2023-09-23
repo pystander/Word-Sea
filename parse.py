@@ -1,5 +1,5 @@
-from dict import *
 import json
+from dict import *
 
 def read_dict(path: str) -> Dictionary:
     """

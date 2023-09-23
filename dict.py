@@ -1,6 +1,6 @@
+import json
 from collections import defaultdict
 from utils.sorted_list import SortedList
-import json
 
 class Cluster:
     """
@@ -46,6 +46,22 @@ class Dictionary:
     def add_vocab(self, vocab: Vocabulary) -> None:
         self.vocabs.insort(vocab)
 
+    def get_vocab(self, word: str) -> Vocabulary | None:
+        left, right = 0, len(self.vocabs) - 1
+        mid = right + (left - right) // 2
+
+        while left <= right:
+            if self.vocabs[mid].word == word:
+                return self.vocabs[mid]
+            elif self.vocabs[mid].word < word:
+                left = mid + 1
+            else:
+                right = mid - 1
+
+            mid = right + (left - right) // 2
+
+        return None
+
     def to_json(self, path) -> None:
         data = defaultdict(list)
 
@@ -60,4 +76,4 @@ class Dictionary:
                 })
 
         with open(path, "w") as f:
-            json.dump(data, f, sort_keys=True, indent=4)
+            json.dump(data, f, indent=4)
