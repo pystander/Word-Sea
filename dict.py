@@ -7,12 +7,23 @@ class Cluster:
     The basic unit of definition(s) and info of a word.
     """
 
-    def __init__(self, pos: str, meaning: str, examples: list[str], synonyms: list[str], related: list[str]) -> None:
-        self.pos = pos
-        self.meaning = meaning
+    def __init__(self, meanings: list[str], examples: list[str], synonyms: list[str], related: list[str]) -> None:
+        self.meanings = meanings
         self.examples = examples
         self.synonyms = synonyms
         self.related = related
+
+    def add_meaning(self, meaning: str) -> None:
+        self.meanings.append(meaning)
+
+    def add_example(self, example: str) -> None:
+        self.examples.append(example)
+
+    def add_synonym(self, synonym: str) -> None:
+        self.synonyms.append(synonym)
+
+    def add_related(self, related: str) -> None:
+        self.related.append(related)
 
 class Vocabulary:
     """
@@ -21,7 +32,7 @@ class Vocabulary:
 
     def __init__(self, word: str) -> None:
         self.word = word
-        self.clusters = []
+        self.clusters = {}
 
     def __gt__(self, other) -> bool:
         return self.word > other.word
@@ -29,8 +40,8 @@ class Vocabulary:
     def __lt__(self, other) -> bool:
         return self.word < other.word
 
-    def add_cluster(self, cluster: Cluster) -> None:
-        self.clusters.append(cluster)
+    def add_cluster(self, pos: str, cluster: Cluster) -> None:
+        self.clusters[pos] = cluster
 
     def get_size(self) -> int:
         return len(self.clusters)
@@ -62,18 +73,24 @@ class Dictionary:
 
         return None
 
+    def get_words(self) -> list[str]:
+        return [vocab.word for vocab in self.vocabs]
+
     def to_json(self, path) -> None:
-        data = defaultdict(list)
+        data = {}
 
         for vocab in self.vocabs:
-            for cluster in vocab.clusters:
-                data[vocab.word].append({
-                    "pos": cluster.pos,
-                    "meaning": cluster.meaning,
+            cluster_dict = {}
+
+            for pos, cluster in vocab.clusters.items():
+                cluster_dict[pos] = {
+                    "meanings": cluster.meanings,
                     "examples": cluster.examples,
                     "synonyms": cluster.synonyms,
                     "related": cluster.related
-                })
+                }
+
+                data[vocab.word] = cluster_dict
 
         with open(path, "w") as f:
             json.dump(data, f, indent=4)

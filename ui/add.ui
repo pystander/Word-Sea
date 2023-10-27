@@ -128,7 +128,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="add_button">
     <property name="geometry">
      <rect>
       <x>50</x>
