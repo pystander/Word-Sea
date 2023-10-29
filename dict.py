@@ -1,5 +1,4 @@
 import json
-from collections import defaultdict
 from utils.sorted_list import SortedList
 
 class Cluster:
@@ -75,6 +74,23 @@ class Dictionary:
 
     def get_words(self) -> list[str]:
         return [vocab.word for vocab in self.vocabs]
+
+    def read_json(self, path: str) -> None:
+        with open(path, "r") as f:
+            data = json.load(f)
+
+        for word, cluster_dict in data.items():
+            vocab = Vocabulary(word)
+
+            for pos, cluster in cluster_dict.items():
+                meanings = cluster["meanings"]
+                examples = cluster["examples"]
+                synonyms = cluster["synonyms"]
+                related = cluster["related"]
+
+                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, related))
+
+            self.add_vocab(vocab)
 
     def to_json(self, path) -> None:
         data = {}
