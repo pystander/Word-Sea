@@ -2,6 +2,7 @@ import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListWidget, QListWidgetItem, QMenuBar, QAction, QCompleter
 from dict import *
+from api.cambridge import fetch
 
 class DictionaryUI(QMainWindow):
     def __init__(self) -> None:
@@ -18,15 +19,36 @@ class DictionaryUI(QMainWindow):
 
         self.search_button.clicked.connect(self.search)
 
-        completer = QCompleter(self.dict.get_words())
-        self.word_input.setCompleter(completer)
+        self.completer = QCompleter(self.dict.get_words())
+        self.word_input.setCompleter(self.completer)
 
     def search(self) -> None:
         word = self.word_input.text()
+
+        if word == "":
+            return
+
         vocab = self.dict.get_vocab(word)
 
-        if vocab is None:
-            return
+        if vocab == None:
+            vocab = Vocabulary(word)
+            fetched = fetch(word)
+
+            if fetched == None:
+                return
+
+            for pos, cluster in fetched.items():
+                meanings = cluster["meanings"]
+                examples = cluster["examples"]
+                synonyms = cluster["synonyms"]
+                related = cluster["related"]
+
+                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, related))
+
+            self.dict.add_vocab(vocab)
+
+            self.completer = QCompleter(self.dict.get_words())
+            self.word_input.setCompleter(self.completer)
 
         self.cluster_list.clear()
 
