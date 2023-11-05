@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListWidget, QListWidgetItem, QMenuBar, QAction, QCompleter
+from PyQt5.QtWidgets import *
 from dict import Dictionary
 from api.cambridge import fetch
 
@@ -18,8 +18,16 @@ class DictionaryUI(QMainWindow):
         self.search_button = self.findChild(QPushButton, "search_button")
         self.cluster_list = self.findChild(QListWidget, "cluster_list")
         self.menu = self.findChild(QMenuBar, "menu")
+        self.open_action = self.findChild(QAction, "open_action")
+        self.save_action = self.findChild(QAction, "save_action")
+        self.save_as_action = self.findChild(QAction, "save_as_action")
+        self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
 
+        self.word_input.returnPressed.connect(self.search)
         self.search_button.clicked.connect(self.search)
+        self.open_action.triggered.connect(self.open)
+        self.save_action.triggered.connect(self.save)
+        self.save_as_action.triggered.connect(self.save_as)
 
         self.completer = QCompleter(self.dict.get_words())
         self.word_input.setCompleter(self.completer)
@@ -38,8 +46,9 @@ class DictionaryUI(QMainWindow):
             if vocab == None:
                 return
 
-            self.dict.add_vocab(vocab)
-            self.completer.model().setStringList(self.dict.get_words())
+            if self.learn_checkbox.isChecked():
+                self.dict.add_vocab(vocab)
+                self.completer.model().setStringList(self.dict.get_words())
 
         self.cluster_list.clear()
 
@@ -66,6 +75,28 @@ class DictionaryUI(QMainWindow):
 
             item.setText(cluster_text)
             self.cluster_list.addItem(item)
+
+    def open(self) -> None:
+        dialog = QFileDialog()
+        dialog.setDefaultSuffix("json")
+        file_name, _ = dialog.getOpenFileName(self, "QFileDialog.getSaveFileName()", "", "JSON (*.json)")
+
+        if file_name:
+            self.dict = Dictionary()
+            self.dict.read_json(file_name)
+
+        self.completer.model().setStringList(self.dict.get_words())
+
+    def save(self) -> None:
+        self.dict.to_json(DICT_PATH)
+
+    def save_as(self) -> None:
+        dialog = QFileDialog()
+        dialog.setDefaultSuffix("json")
+        file_name, _ = dialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "JSON (*.json)")
+
+        if file_name:
+            self.dict.to_json(file_name)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
