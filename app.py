@@ -1,8 +1,10 @@
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QListWidget, QListWidgetItem, QMenuBar, QAction, QCompleter
-from dict import *
+from dict import Dictionary
 from api.cambridge import fetch
+
+DICT_PATH = "data/dictionary.json"
 
 class DictionaryUI(QMainWindow):
     def __init__(self) -> None:
@@ -10,7 +12,7 @@ class DictionaryUI(QMainWindow):
         uic.loadUi("ui/dictionary.ui", self)
 
         self.dict = Dictionary()
-        self.dict.read_json("data/test.json")
+        self.dict.read_json(DICT_PATH)
 
         self.word_input = self.findChild(QLineEdit, "word_input")
         self.search_button = self.findChild(QPushButton, "search_button")
@@ -31,24 +33,13 @@ class DictionaryUI(QMainWindow):
         vocab = self.dict.get_vocab(word)
 
         if vocab == None:
-            vocab = Vocabulary(word)
-            fetched = fetch(word)
+            vocab = fetch(word)
 
-            if fetched == None:
+            if vocab == None:
                 return
 
-            for pos, cluster in fetched.items():
-                meanings = cluster["meanings"]
-                examples = cluster["examples"]
-                synonyms = cluster["synonyms"]
-                related = cluster["related"]
-
-                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, related))
-
             self.dict.add_vocab(vocab)
-
-            self.completer = QCompleter(self.dict.get_words())
-            self.word_input.setCompleter(self.completer)
+            self.completer.model().setStringList(self.dict.get_words())
 
         self.cluster_list.clear()
 
@@ -75,12 +66,6 @@ class DictionaryUI(QMainWindow):
 
             item.setText(cluster_text)
             self.cluster_list.addItem(item)
-
-    def save_dict(self, path: str) -> None:
-        try:
-            self.dict.to_json(path)
-        except:
-            print("[Error] Failed to save dictionary.")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
