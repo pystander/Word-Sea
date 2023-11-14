@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Dictionary</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="word_input">
@@ -78,6 +78,25 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QPushButton" name="test_button">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>10</y>
+      <width>75</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
@@ -95,6 +114,7 @@
     <addaction name="open_action"/>
     <addaction name="save_action"/>
     <addaction name="save_as_action"/>
+    <addaction name="view_action"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -117,6 +137,16 @@
   <action name="open_action">
    <property name="text">
     <string>Open</string>
+   </property>
+  </action>
+  <action name="actionsView">
+   <property name="text">
+    <string>View</string>
+   </property>
+  </action>
+  <action name="view_action">
+   <property name="text">
+    <string>View</string>
    </property>
   </action>
  </widget>

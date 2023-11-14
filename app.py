@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
-from dict import Dictionary
+from dict.dictionary import Dictionary
 from api.cambridge import fetch
 
 DICT_PATH = "data/dictionary.json"
@@ -11,23 +11,32 @@ class DictionaryUI(QMainWindow):
         super(DictionaryUI, self).__init__()
         uic.loadUi("ui/dictionary.ui", self)
 
+        self.dict_path = DICT_PATH
+        self.view_ui = None
+
         self.dict = Dictionary()
         self.dict.read_json(DICT_PATH)
 
         self.word_input = self.findChild(QLineEdit, "word_input")
         self.search_button = self.findChild(QPushButton, "search_button")
         self.cluster_list = self.findChild(QListWidget, "cluster_list")
+        self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
+
         self.menu = self.findChild(QMenuBar, "menu")
         self.open_action = self.findChild(QAction, "open_action")
         self.save_action = self.findChild(QAction, "save_action")
         self.save_as_action = self.findChild(QAction, "save_as_action")
-        self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
+        self.view_action = self.findChild(QAction, "view_action")
 
         self.word_input.returnPressed.connect(self.search)
         self.search_button.clicked.connect(self.search)
+
         self.open_action.triggered.connect(self.open)
         self.save_action.triggered.connect(self.save)
         self.save_as_action.triggered.connect(self.save_as)
+        self.view_action.triggered.connect(self.view)
+
+        self.save_action.setShortcut("Ctrl+S")
 
         self.completer = QCompleter(self.dict.get_words())
         self.word_input.setCompleter(self.completer)
@@ -88,7 +97,7 @@ class DictionaryUI(QMainWindow):
         self.completer.model().setStringList(self.dict.get_words())
 
     def save(self) -> None:
-        self.dict.to_json(DICT_PATH)
+        self.dict.to_json(self.dict_path)
 
     def save_as(self) -> None:
         dialog = QFileDialog()
@@ -97,6 +106,34 @@ class DictionaryUI(QMainWindow):
 
         if file_name:
             self.dict.to_json(file_name)
+            self.dict_path = file_name
+
+    def view(self) -> None:
+        if self.view_ui != None:
+            self.view_ui.close()
+
+        self.view_ui = ViewUI(self.dict)
+        self.view_ui.show()
+
+class ViewUI(QMainWindow):
+    def __init__(self, dict: Dictionary) -> None:
+        super(ViewUI, self).__init__()
+        uic.loadUi("ui/view.ui", self)
+
+        self.dict = dict
+
+        self.word_input = self.findChild(QLineEdit, "word_input")
+        self.search_button = self.findChild(QPushButton, "search_button")
+        self.vocab_list = self.findChild(QListWidget, "vocab_list")
+
+        self.word_input.returnPressed.connect(self.search)
+        self.search_button.clicked.connect(self.search)
+
+        # TODO: Display existing vocab in list
+
+    def search(self) -> None:
+        # TODO: Implement search
+        raise NotImplementedError
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
