@@ -6,7 +6,7 @@ class Cluster:
     The basic unit of definition(s) and info of a word.
     """
 
-    def __init__(self, meanings: list[str], examples: list[str], synonyms: list[str], related: list[str]) -> None:
+    def __init__(self, meanings: list[str] = [], examples: list[str] = [], synonyms: list[str] = [], related: list[str] = []) -> None:
         self.meanings = meanings
         self.examples = examples
         self.synonyms = synonyms
