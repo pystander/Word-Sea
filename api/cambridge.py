@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from dict import Cluster, Vocabulary
+from dict.dictionary import Cluster, Vocabulary
 
 BASE_URL = "https://dictionary.cambridge.org/dictionary/english/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"}
@@ -43,10 +43,10 @@ def fetch(word: str) -> Vocabulary | None:
                 ddef = def_block.find("div", class_="def ddef_d db")
                 dexamps = def_block.find_all("div", class_="examp dexamp")
 
-                meanings.append(ddef.text.lstrip())
+                meanings.append(ddef.text.lstrip().replace('\n', ''))
 
                 for dexamp in dexamps:
-                    examples.append(dexamp.text.lstrip())
+                    examples.append(dexamp.text.lstrip().replace('\n', ''))
 
                 dsyn = def_block.find("div", class_="xref synonyms hax dxref-w lmt-25")
                 dsee = def_block.find("div", class_="xref see hax dxref-w lmt-25")
