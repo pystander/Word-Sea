@@ -20,18 +20,19 @@ def fetch(search_word: str) -> Vocabulary | None:
     if dictionary == None:
         return None
 
+    vocab = Vocabulary(search_word)
     entries = dictionary.find_all("div", class_="pr entry-body__el")
-    vocab = None
 
     for entry in entries:
         try:
-            if vocab == None:
-                word = entry.find("span", class_="hw dhw").text
-                vocab = Vocabulary(word)
-
             pos_header = entry.find("div", class_="pos-header dpos-h")
+
             pos = pos_header.find("span", class_="pos dpos").text
             gram = pos_header.find("span", class_="gram dgram")
+            word = pos_header.find("span", class_="hw dhw").text
+
+            if word != search_word:
+                vocab.word = word
 
             if gram != None:
                 pos += " " + gram.text

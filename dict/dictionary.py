@@ -28,7 +28,7 @@ class Vocabulary:
     A word defined by Cluster(s).
     """
 
-    def __init__(self, word: str) -> None:
+    def __init__(self, word: str = "") -> None:
         self.word = word
         self.clusters = {}
 
