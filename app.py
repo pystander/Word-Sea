@@ -1,7 +1,8 @@
 import sys
 from PyQt5 import uic
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from dict.dictionary import Dictionary
+from dict.dictionary import Vocabulary, Dictionary
 from api.cambridge import fetch
 
 DICT_PATH = "data/dictionary.json"
@@ -112,15 +113,18 @@ class DictionaryUI(QMainWindow):
         if self.view_ui != None:
             self.view_ui.close()
 
-        self.view_ui = ViewUI(self.dict)
+        self.view_ui = ViewUI(self)
         self.view_ui.show()
 
 class ViewUI(QMainWindow):
-    def __init__(self, dict: Dictionary) -> None:
+    def __init__(self, dict_ui: DictionaryUI) -> None:
         super(ViewUI, self).__init__()
         uic.loadUi("ui/view.ui", self)
 
-        self.dict = dict
+        self.vocab_ui = None
+
+        self.words = dict_ui.dict.get_words()
+        self.vocabs = dict_ui.dict.vocabs
 
         self.word_input = self.findChild(QLineEdit, "word_input")
         self.search_button = self.findChild(QPushButton, "search_button")
@@ -128,12 +132,65 @@ class ViewUI(QMainWindow):
 
         self.word_input.returnPressed.connect(self.search)
         self.search_button.clicked.connect(self.search)
+        self.vocab_list.itemDoubleClicked.connect(self.view_vocab)
 
-        # TODO: Display existing vocab in list
+        self.completer = QCompleter(self.words)
+        self.word_input.setCompleter(self.completer)
+
+        for vocab in self.vocabs:
+            item = QListWidgetItem()
+            item.setData(Qt.UserRole, vocab)
+            item.setText(vocab.word)
+            self.vocab_list.addItem(item)
 
     def search(self) -> None:
         # TODO: Implement search
         raise NotImplementedError
+
+    def view_vocab(self, item: QListWidgetItem):
+        vocab = item.data(Qt.UserRole)
+
+        if self.vocab_ui != None:
+            self.vocab_ui.close()
+
+        self.vocab_ui = VocabularyUI(vocab)
+        self.vocab_ui.show()
+
+class VocabularyUI(QMainWindow):
+    def __init__(self, vocab: Vocabulary):
+        super(VocabularyUI, self).__init__()
+        uic.loadUi("ui/vocabulary.ui", self)
+
+        self.clusters = vocab.clusters
+
+        self.word_label = self.findChild(QLabel, "word_label")
+        self.cluster_list = self.findChild(QListWidget, "cluster_list")
+
+        self.word_label.setText(vocab.word)
+
+        for pos, cluster in self.clusters.items():
+            meanings = cluster.meanings
+            examples = cluster.examples
+            synonyms = cluster.synonyms
+            related = cluster.related
+
+            item = QListWidgetItem()
+
+            cluster_text = pos + "\n"
+
+            for i, meaning in enumerate(meanings):
+                cluster_text += "%d. %s" % (i + 1, meaning) + "\n"
+
+            cluster_text += "\n" + "Examples:" + "\n"
+
+            for example in examples:
+                cluster_text += "    " + "- %s" % example + "\n"
+
+            cluster_text += "\n" + "Synonyms: " + ', '.join(synonyms) + "\n"
+            cluster_text += "\n" + "Related: " + ', '.join(related) + "\n"
+
+            item.setText(cluster_text)
+            self.cluster_list.addItem(item)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
