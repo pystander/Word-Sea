@@ -2,6 +2,7 @@ import sys
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QFont
 from dict.dictionary import Vocabulary, Dictionary
 from api.cambridge import fetch
 
@@ -22,25 +23,31 @@ class DictionaryUI(QMainWindow):
         self.search_button = self.findChild(QPushButton, "search_button")
         self.cluster_list = self.findChild(QListWidget, "cluster_list")
         self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
+        self.top_checkbox = self.findChild(QCheckBox, "top_checkbox")
 
         self.menu = self.findChild(QMenuBar, "menu")
         self.open_action = self.findChild(QAction, "open_action")
         self.save_action = self.findChild(QAction, "save_action")
         self.save_as_action = self.findChild(QAction, "save_as_action")
         self.view_action = self.findChild(QAction, "view_action")
+        self.clear_action = self.findChild(QAction, "clear_action")
 
         self.word_input.returnPressed.connect(self.search)
         self.search_button.clicked.connect(self.search)
+        self.top_checkbox.stateChanged.connect(self.set_window_flag)
 
         self.open_action.triggered.connect(self.open)
         self.save_action.triggered.connect(self.save)
         self.save_as_action.triggered.connect(self.save_as)
         self.view_action.triggered.connect(self.view)
+        self.clear_action.triggered.connect(self.clear)
 
         self.save_action.setShortcut("Ctrl+S")
 
         self.completer = QCompleter(self.dict.get_words())
         self.word_input.setCompleter(self.completer)
+
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     def search(self) -> None:
         word = self.word_input.text()
@@ -61,6 +68,14 @@ class DictionaryUI(QMainWindow):
                 self.completer.model().setStringList(self.dict.get_words())
 
         self.cluster_list.clear()
+
+        font = QFont()
+        font.setBold(True)
+
+        item = QListWidgetItem()
+        item.setText(vocab.word)
+        item.setFont(font)
+        self.cluster_list.addItem(item)
 
         for pos, cluster in vocab.clusters.items():
             meanings = cluster.meanings
@@ -115,6 +130,19 @@ class DictionaryUI(QMainWindow):
 
         self.view_ui = ViewUI(self.dict)
         self.view_ui.show()
+
+    def clear(self) -> None:
+        self.dict = Dictionary()
+        self.completer = QCompleter(self.dict.get_words())
+        self.word_input.setCompleter(self.completer)
+
+    def set_window_flag(self) -> None:
+        if self.top_checkbox.isChecked():
+            self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        else:
+            self.setWindowFlags(Qt.Window)
+
+        self.show()
 
 class ViewUI(QMainWindow):
     def __init__(self, dict: Dictionary) -> None:

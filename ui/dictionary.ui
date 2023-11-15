@@ -67,12 +67,28 @@
      <rect>
       <x>260</x>
       <y>10</y>
-      <width>75</width>
+      <width>50</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>Learn</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="top_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Window on Top</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -96,6 +112,7 @@
     <addaction name="save_action"/>
     <addaction name="save_as_action"/>
     <addaction name="view_action"/>
+    <addaction name="clear_action"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -128,6 +145,11 @@
   <action name="view_action">
    <property name="text">
     <string>View</string>
+   </property>
+  </action>
+  <action name="clear_action">
+   <property name="text">
+    <string>Clear</string>
    </property>
   </action>
  </widget>

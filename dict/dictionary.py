@@ -98,4 +98,4 @@ class Dictionary:
                 data[word] = cluster_dict
 
         with open(path, "w") as f:
-            json.dump(data, f, indent=4)
+            json.dump(data, f, indent=4, sort_keys=True)
