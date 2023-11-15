@@ -113,41 +113,34 @@ class DictionaryUI(QMainWindow):
         if self.view_ui != None:
             self.view_ui.close()
 
-        self.view_ui = ViewUI(self)
+        self.view_ui = ViewUI(self.dict)
         self.view_ui.show()
 
 class ViewUI(QMainWindow):
-    def __init__(self, dict_ui: DictionaryUI) -> None:
+    def __init__(self, dict: Dictionary) -> None:
         super(ViewUI, self).__init__()
         uic.loadUi("ui/view.ui", self)
 
         self.vocab_ui = None
 
-        self.words = dict_ui.dict.get_words()
-        self.vocabs = dict_ui.dict.vocabs
+        self.dict = dict
 
         self.word_input = self.findChild(QLineEdit, "word_input")
         self.search_button = self.findChild(QPushButton, "search_button")
         self.vocab_list = self.findChild(QListWidget, "vocab_list")
 
         self.word_input.returnPressed.connect(self.search)
+        self.word_input.textChanged.connect(self.search)
         self.search_button.clicked.connect(self.search)
         self.vocab_list.itemDoubleClicked.connect(self.view_vocab)
 
-        self.completer = QCompleter(self.words)
-        self.word_input.setCompleter(self.completer)
-
-        for vocab in self.vocabs:
+        for word in self.dict.vocabs:
             item = QListWidgetItem()
-            item.setData(Qt.UserRole, vocab)
-            item.setText(vocab.word)
+            item.setData(Qt.UserRole, self.dict.vocabs[word])
+            item.setText(word)
             self.vocab_list.addItem(item)
 
-    def search(self) -> None:
-        # TODO: Implement search
-        raise NotImplementedError
-
-    def view_vocab(self, item: QListWidgetItem):
+    def view_vocab(self, item: QListWidgetItem) -> None:
         vocab = item.data(Qt.UserRole)
 
         if self.vocab_ui != None:
@@ -155,6 +148,31 @@ class ViewUI(QMainWindow):
 
         self.vocab_ui = VocabularyUI(vocab)
         self.vocab_ui.show()
+
+    def search(self) -> None:
+        word = self.word_input.text()
+
+        if word == "":
+            self.reset_list()
+
+        vocabs = self.dict.get_vocabs_by_prefix(word)
+
+        self.vocab_list.clear()
+
+        for vocab in vocabs:
+            item = QListWidgetItem()
+            item.setData(Qt.UserRole, self.dict.vocabs[vocab.word])
+            item.setText(vocab.word)
+            self.vocab_list.addItem(item)
+
+    def reset_list(self) -> None:
+        self.vocab_list.clear()
+
+        for word in self.dict.vocabs:
+            item = QListWidgetItem()
+            item.setData(Qt.UserRole, self.dict.vocabs[word])
+            item.setText(word)
+            self.vocab_list.addItem(item)
 
 class VocabularyUI(QMainWindow):
     def __init__(self, vocab: Vocabulary):

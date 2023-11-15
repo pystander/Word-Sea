@@ -1,5 +1,4 @@
 import json
-from utils.sorted_list import SortedList
 
 class Cluster:
     """
@@ -51,29 +50,19 @@ class Dictionary:
     """
 
     def __init__(self) -> None:
-        self.vocabs = SortedList()
+        self.vocabs = {}
 
     def add_vocab(self, vocab: Vocabulary) -> None:
-        self.vocabs.insort(vocab)
+        self.vocabs[vocab.word] = vocab
 
     def get_vocab(self, word: str) -> Vocabulary | None:
-        left, right = 0, len(self.vocabs) - 1
-        mid = right + (left - right) // 2
+        return self.vocabs.get(word, None)
 
-        while left <= right:
-            if self.vocabs[mid].word == word:
-                return self.vocabs[mid]
-            elif self.vocabs[mid].word < word:
-                left = mid + 1
-            else:
-                right = mid - 1
-
-            mid = right + (left - right) // 2
-
-        return None
+    def get_vocabs_by_prefix(self, prefix: str) -> list[Vocabulary]:
+        return [self.vocabs[word] for word in self.vocabs if word.startswith(prefix)]
 
     def get_words(self) -> list[str]:
-        return [vocab.word for vocab in self.vocabs]
+        return [word for word in self.vocabs]
 
     def read_json(self, path: str) -> None:
         with open(path, "r") as f:
@@ -95,10 +84,10 @@ class Dictionary:
     def to_json(self, path) -> None:
         data = {}
 
-        for vocab in self.vocabs:
+        for word in self.vocabs:
             cluster_dict = {}
 
-            for pos, cluster in vocab.clusters.items():
+            for pos, cluster in self.vocabs[word].clusters.items():
                 cluster_dict[pos] = {
                     "meanings": cluster.meanings,
                     "examples": cluster.examples,
@@ -106,7 +95,7 @@ class Dictionary:
                     "related": cluster.related
                 }
 
-                data[vocab.word] = cluster_dict
+                data[word] = cluster_dict
 
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
