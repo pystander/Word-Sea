@@ -37,20 +37,68 @@ def fetch(search_word: str) -> Vocabulary | None:
             if gram != None:
                 pos += " " + gram.text
 
-            def_blocks = entry.find_all("div", class_=re.compile("^def-block ddef_block"))
-
             meanings = []
             examples = []
             synonyms = []
+            antonyms = []
             related = []
 
+            xref_synonym = entry.find("div", class_=re.compile("^xref synonym "))
+            xref_synonyms = entry.find("div", class_=re.compile("^xref synonyms "))
+            xref_opposite = entry.find("div", class_=re.compile("^xref opposite "))
+            xref_see = entry.find("div", class_=re.compile("^xref see "))
+            xref_see_also = entry.find("div", class_=re.compile("^xref see_also "))
+            xref_compare = entry.find("div", class_=re.compile("^xref compare "))
+            xref_related = entry.find("div", class_=re.compile("^xref related "))
             xref_related_word = entry.find("div", class_=re.compile("^xref related_word "))
+
+            if xref_synonym != None:
+                syn = xref_synonym.find("span", class_="x-h dx-h")
+                synonyms.append(syn.text)
+
+            if xref_synonyms != None:
+                syns = xref_synonyms.find_all("span", class_="x-h dx-h")
+
+                for syn in syns:
+                    synonyms.append(syn.text)
+
+            if xref_opposite != None:
+                ants = xref_opposite.find_all("span", class_="x-h dx-h")
+
+                for ant in ants:
+                    antonyms.append(ant.text)
+
+            if xref_see != None:
+                sees = xref_see.find_all("span", class_="x-h dx-h")
+
+                for see in sees:
+                    related.append(see.text)
+
+            if xref_see_also != None:
+                see_alsos = xref_see_also.find_all("span", class_="x-h dx-h")
+
+                for see_also in see_alsos:
+                    related.append(see_also.text)
+
+            if xref_compare != None:
+                compares = xref_compare.find_all("span", class_="x-h dx-h")
+
+                for compare in compares:
+                    related.append(compare.text)
+
+            if xref_related != None:
+                rels = xref_related.find_all("span", class_="x-h dx-h")
+
+                for rel in rels:
+                    related.append(rel.text)
 
             if xref_related_word != None:
                 related_words = xref_related_word.find_all("span", class_="x-h dx-h")
 
                 for related_word in related_words:
                     related.append(related_word.text)
+
+            def_blocks = entry.find_all("div", class_=re.compile("^def-block ddef_block"))
 
             for def_block in def_blocks:
                 ddef = def_block.find("div", class_="def ddef_d db")
@@ -61,48 +109,7 @@ def fetch(search_word: str) -> Vocabulary | None:
                 if dexamp != None:
                     examples.append(dexamp.text.lstrip().rstrip(": ").replace('\n', ''))
 
-                xref_synonym = def_block.find("div", class_=re.compile("^xref synonym "))
-                xref_synonyms = def_block.find("div", class_=re.compile("^xref synonyms "))
-                xref_see = def_block.find("div", class_=re.compile("^xref see "))
-                xref_see_also = def_block.find("div", class_=re.compile("^xref see_also "))
-                xref_compare = def_block.find("div", class_=re.compile("^xref compare "))
-                xref_related = def_block.find("div", class_=re.compile("^xref related "))
-
-                if xref_synonym != None:
-                    syn = xref_synonym.find("span", class_="x-h dx-h")
-                    synonyms.append(syn.text)
-
-                if xref_synonyms != None:
-                    syns = xref_synonyms.find_all("span", class_="x-h dx-h")
-
-                    for syn in syns:
-                        synonyms.append(syn.text)
-
-                if xref_see != None:
-                    sees = xref_see.find_all("span", class_="x-h dx-h")
-
-                    for see in sees:
-                        related.append(see.text)
-
-                if xref_see_also != None:
-                    see_alsos = xref_see_also.find_all("span", class_="x-h dx-h")
-
-                    for see_also in see_alsos:
-                        related.append(see_also.text)
-
-                if xref_compare != None:
-                    compares = xref_compare.find_all("span", class_="x-h dx-h")
-
-                    for compare in compares:
-                        related.append(compare.text)
-
-                if xref_related != None:
-                    rels = xref_related.find_all("span", class_="x-h dx-h")
-
-                    for rel in rels:
-                        related.append(rel.text)
-
-            vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, related))
+            vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
 
         except Exception as e:
             print(e)

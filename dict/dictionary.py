@@ -5,10 +5,11 @@ class Cluster:
     The basic unit of definition(s) and info of a word.
     """
 
-    def __init__(self, meanings: list[str] = [], examples: list[str] = [], synonyms: list[str] = [], related: list[str] = []) -> None:
+    def __init__(self, meanings: list[str] = [], examples: list[str] = [], synonyms: list[str] = [], antonyms: list[str] = [], related: list[str] = []) -> None:
         self.meanings = meanings
         self.examples = examples
         self.synonyms = synonyms
+        self.antonyms = antonyms
         self.related = related
 
     def add_meaning(self, meaning: str) -> None:
@@ -19,6 +20,9 @@ class Cluster:
 
     def add_synonym(self, synonym: str) -> None:
         self.synonyms.append(synonym)
+
+    def add_antonym(self, antonym: str) -> None:
+        self.antonyms.append(antonym)
 
     def add_related(self, related: str) -> None:
         self.related.append(related)
@@ -75,9 +79,10 @@ class Dictionary:
                 meanings = cluster["meanings"]
                 examples = cluster["examples"]
                 synonyms = cluster["synonyms"]
+                antonyms = cluster["antonyms"]
                 related = cluster["related"]
 
-                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, related))
+                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
 
             self.add_vocab(vocab)
 
@@ -92,6 +97,7 @@ class Dictionary:
                     "meanings": cluster.meanings,
                     "examples": cluster.examples,
                     "synonyms": cluster.synonyms,
+                    "antonyms": cluster.antonyms,
                     "related": cluster.related
                 }
 

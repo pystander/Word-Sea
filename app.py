@@ -3,7 +3,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
-from dict.dictionary import Vocabulary, Dictionary
+from dict.dictionary import Dictionary
 from api.cambridge import fetch
 
 DICT_PATH = "data/dictionary.json"
@@ -81,6 +81,7 @@ class DictionaryUI(QMainWindow):
             meanings = cluster.meanings
             examples = cluster.examples
             synonyms = cluster.synonyms
+            antonyms = cluster.antonyms
             related = cluster.related
 
             item = QListWidgetItem()
@@ -90,13 +91,20 @@ class DictionaryUI(QMainWindow):
             for i, meaning in enumerate(meanings):
                 cluster_text += "%d. %s" % (i + 1, meaning) + "\n"
 
-            cluster_text += "\n" + "Examples:" + "\n"
+            if examples:
+                cluster_text += "\n" + "Examples:" + "\n"
 
-            for example in examples:
-                cluster_text += "    " + "- %s" % example + "\n"
+                for example in examples:
+                    cluster_text += "    " + "- %s" % example + "\n"
 
-            cluster_text += "\n" + "Synonyms: " + ', '.join(synonyms) + "\n"
-            cluster_text += "\n" + "Related: " + ', '.join(related) + "\n"
+            if synonyms:
+                cluster_text += "\n" + "Synonyms: " + ', '.join(synonyms) + "\n"
+
+            if antonyms:
+                cluster_text += "\n" + "Antonyms: " + ', '.join(antonyms) + "\n"
+
+            if related:
+                cluster_text += "\n" + "Related: " + ', '.join(related) + "\n"
 
             item.setText(cluster_text)
             self.cluster_list.addItem(item)
