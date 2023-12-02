@@ -25,22 +25,27 @@ class DictionaryUI(QMainWindow):
         self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
         self.top_checkbox = self.findChild(QCheckBox, "top_checkbox")
 
-        self.menu = self.findChild(QMenuBar, "menu")
         self.open_action = self.findChild(QAction, "open_action")
         self.save_action = self.findChild(QAction, "save_action")
         self.save_as_action = self.findChild(QAction, "save_as_action")
         self.view_action = self.findChild(QAction, "view_action")
         self.clear_action = self.findChild(QAction, "clear_action")
 
-        self.word_input.returnPressed.connect(self.search)
-        self.search_button.clicked.connect(self.search)
-        self.top_checkbox.stateChanged.connect(self.set_window_flag)
-
         self.open_action.triggered.connect(self.open)
         self.save_action.triggered.connect(self.save)
         self.save_as_action.triggered.connect(self.save_as)
         self.view_action.triggered.connect(self.view)
         self.clear_action.triggered.connect(self.clear)
+
+        self.theme_default_action = self.findChild(QAction, "theme_default_action")
+        self.theme_dark_action = self.findChild(QAction, "theme_dark_action")
+
+        self.theme_default_action.triggered.connect(lambda: self.set_theme(""))
+        self.theme_dark_action.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
+
+        self.word_input.returnPressed.connect(self.search)
+        self.search_button.clicked.connect(self.search)
+        self.top_checkbox.stateChanged.connect(self.set_window_flag)
 
         self.save_action.setShortcut("Ctrl+S")
 
@@ -152,6 +157,23 @@ class DictionaryUI(QMainWindow):
 
         self.show()
 
+    def read_qss(self, path: str) -> str:
+        with open(path, "r") as f:
+            return f.read()
+
+    def set_theme(self, path: str) -> None:
+        if path == "":
+            self.setStyleSheet("")
+
+            if self.view_ui != None:
+                self.view_ui.setStyleSheet(self.styleSheet())
+        else:
+            qss = self.read_qss(path)
+            self.setStyleSheet(qss)
+
+            if self.view_ui != None:
+                self.view_ui.setStyleSheet(qss)
+
 class ViewUI(QMainWindow):
     def __init__(self, dict_ui: DictionaryUI) -> None:
         super(ViewUI, self).__init__()
@@ -170,6 +192,7 @@ class ViewUI(QMainWindow):
         self.vocab_list.itemDoubleClicked.connect(self.view_vocab)
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setStyleSheet(dict_ui.styleSheet())
 
         for word in self.dict.vocabs:
             item = QListWidgetItem()

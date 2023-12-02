@@ -1,0 +1,110 @@
+/*
+Source: https://github.com/wOvAN/liteide-vscode-dark-theme
+*/
+
+QWidget:window {
+    font-family: "Segoe UI" ;
+    border: 0px solid #383838;
+    background-color: #1E1E1E;
+}
+
+QListView {
+    background-color: #252526;
+    color: #CCCCCC;
+    outline: 0;
+    border: 2px solid transparent;
+}
+
+QListView::item:hover {
+    color: #AFBDC4;
+    background: transparent;
+}
+
+QListView::item:selected {
+    color: #ffffff;
+    background: transparent;
+}
+
+QCheckBox, QRadioButton {
+    color: #CCCCCC;
+}
+
+QCheckBox::indicator:disabled, QRadioButton::indicator:disabled, QTreeView::indicator:disabled {
+    background-color: #444444;
+}
+
+QPushButton {
+    background-color: #0E639C;
+    color: #EFEFEF;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 4px 22px;
+}
+
+QPushButton:hover {
+    color: #FFFFFF;
+}
+
+QPushButton:pressed {
+    color: #DDDDDD;
+}
+
+QLineEdit {
+    background: transparent;
+    background-color: #292929;
+    border: 1px solid transparent;
+    color: #CCCCCC;
+}
+
+QMenu {
+    background-color: #252526;
+    color: #CCCCCC;
+}
+
+QMenu::item:selected {
+    color: #F9FBFC;
+    background-color: #094771;
+}
+
+QMenu::item:pressed {
+    color: #FFFFFF;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: #3C3C3C;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+QMenuBar {
+    background-color: #3C3C3C;
+    color: #CCCCCC;
+}
+
+QMenuBar::item {
+    background: transparent;
+}
+
+QMenuBar::item:disabled {
+    color: gray;
+}
+
+QMenuBar::item:selected {
+    color: #C5C5C5;
+    background-color: #505050;
+}
+
+QMenuBar::item:pressed {
+    color: #FFFFFF;
+}
+
+QDialogButtonBox {
+    button-layout: 0;
+}
+
+QTabWidget::tab-bar {
+    left: 0px;
+}
