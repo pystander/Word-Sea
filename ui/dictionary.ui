@@ -38,7 +38,7 @@
      <rect>
       <x>170</x>
       <y>10</y>
-      <width>75</width>
+      <width>81</width>
       <height>20</height>
      </rect>
     </property>
@@ -67,12 +67,28 @@
      <rect>
       <x>260</x>
       <y>10</y>
-      <width>75</width>
+      <width>50</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>Learn</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="top_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>10</y>
+      <width>100</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Window on Top</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -96,10 +112,24 @@
     <addaction name="save_action"/>
     <addaction name="save_as_action"/>
     <addaction name="view_action"/>
+    <addaction name="clear_action"/>
+   </widget>
+   <widget class="QMenu" name="menu_view">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menu_theme">
+     <property name="title">
+      <string>Theme</string>
+     </property>
+     <addaction name="theme_default_action"/>
+     <addaction name="theme_dark_action"/>
+    </widget>
+    <addaction name="menu_theme"/>
    </widget>
    <addaction name="menu"/>
+   <addaction name="menu_view"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_add">
    <property name="text">
     <string>Add Vocabulary</string>
@@ -127,7 +157,22 @@
   </action>
   <action name="view_action">
    <property name="text">
-    <string>View</string>
+    <string>View List</string>
+   </property>
+  </action>
+  <action name="clear_action">
+   <property name="text">
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="theme_default_action">
+   <property name="text">
+    <string>Default</string>
+   </property>
+  </action>
+  <action name="theme_dark_action">
+   <property name="text">
+    <string>Dark</string>
    </property>
   </action>
  </widget>
