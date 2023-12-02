@@ -33,6 +33,39 @@ QCheckBox::indicator:disabled, QRadioButton::indicator:disabled, QTreeView::indi
     background-color: #444444;
 }
 
+QScrollBar:horizontal {
+    background: #1E1E1E;
+    height: 13px;
+    margin: 0;
+}
+
+QScrollBar:vertical {
+    background: #1E1E1E;
+    width: 13px;
+    margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background: #424242;
+    min-width: 13px;
+}
+
+QScrollBar::handle:vertical {
+    background: #424242;
+    min-height: 13px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal,
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal,
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+      border: none;
+      background: none;
+}
+
 QPushButton {
     background-color: #0E639C;
     color: #EFEFEF;
