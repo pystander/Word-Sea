@@ -72,6 +72,9 @@ class DictionaryUI(QMainWindow):
                 self.dict.add_vocab(vocab)
                 self.completer.model().setStringList(self.dict.get_words())
 
+                if self.view_ui != None:
+                    self.view_ui.update_item(vocab.word)
+
         self.cluster_list.clear()
 
         font = QFont()
@@ -114,6 +117,8 @@ class DictionaryUI(QMainWindow):
             item.setText(cluster_text)
             self.cluster_list.addItem(item)
 
+        self.dict.sort()
+
     def open(self) -> None:
         dialog = QFileDialog()
         dialog.setDefaultSuffix("json")
@@ -124,6 +129,7 @@ class DictionaryUI(QMainWindow):
             self.dict.read_json(file_name)
 
         self.completer.model().setStringList(self.dict.get_words())
+        self.dict_path = file_name
 
     def save(self) -> None:
         self.dict.to_json(self.dict_path)
@@ -219,6 +225,13 @@ class ViewUI(QMainWindow):
             item.setData(Qt.UserRole, self.dict.vocabs[vocab.word])
             item.setText(vocab.word)
             self.vocab_list.addItem(item)
+
+    def update_item(self, word: str) -> None:
+        item = QListWidgetItem()
+        item.setData(Qt.UserRole, self.dict.vocabs[word])
+        item.setText(word)
+        self.vocab_list.addItem(item)
+        self.vocab_list.sortItems()
 
     def reset_list(self) -> None:
         self.vocab_list.clear()

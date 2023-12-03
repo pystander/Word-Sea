@@ -68,6 +68,9 @@ class Dictionary:
     def get_words(self) -> list[str]:
         return [word for word in self.vocabs]
 
+    def sort(self) -> None:
+        self.vocabs = dict(sorted(self.vocabs.items()))
+
     def read_json(self, path: str) -> None:
         with open(path, "r") as f:
             data = json.load(f)
@@ -104,4 +107,4 @@ class Dictionary:
                 data[word] = cluster_dict
 
         with open(path, "w") as f:
-            json.dump(data, f, indent=4, sort_keys=True)
+            json.dump(data, f, indent=4)
