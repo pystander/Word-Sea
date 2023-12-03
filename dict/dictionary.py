@@ -1,4 +1,5 @@
 import json
+from utils.search import bisect_left
 
 class Cluster:
     """
@@ -63,7 +64,15 @@ class Dictionary:
         return self.vocabs.get(word, None)
 
     def get_vocabs_by_prefix(self, prefix: str) -> list[Vocabulary]:
-        return [self.vocabs[word] for word in self.vocabs if word.startswith(prefix)]
+        words = list(self.vocabs.keys())    # TODO: Replace this with a sorted list of words.
+
+        if prefix == "":
+            return [self.vocabs[word] for word in words]
+
+        left = bisect_left(words, prefix)
+        right = bisect_left(words, prefix[:-1] + chr(ord(prefix[-1]) + 1))
+
+        return [self.vocabs[word] for word in words[left:right]]
 
     def get_words(self) -> list[str]:
         return [word for word in self.vocabs]

@@ -189,12 +189,10 @@ class ViewUI(QMainWindow):
         self.dict = dict_ui.dict
 
         self.word_input = self.findChild(QLineEdit, "word_input")
-        self.search_button = self.findChild(QPushButton, "search_button")
         self.vocab_list = self.findChild(QListWidget, "vocab_list")
 
         self.word_input.returnPressed.connect(self.search)
         self.word_input.textChanged.connect(self.search)
-        self.search_button.clicked.connect(self.search)
         self.vocab_list.itemDoubleClicked.connect(self.view_vocab)
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
