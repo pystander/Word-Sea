@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
 from dict.dictionary import Dictionary
 from api.cambridge import fetch
+from utils.search import bisect_left
 
 DICT_PATH = "data/dictionary.json"
 
@@ -21,9 +22,15 @@ class DictionaryUI(QMainWindow):
 
         self.word_input = self.findChild(QLineEdit, "word_input")
         self.search_button = self.findChild(QPushButton, "search_button")
+        self.remove_button = self.findChild(QPushButton, "remove_button")
         self.cluster_list = self.findChild(QListWidget, "cluster_list")
         self.learn_checkbox = self.findChild(QCheckBox, "learn_checkbox")
         self.top_checkbox = self.findChild(QCheckBox, "top_checkbox")
+
+        self.word_input.returnPressed.connect(self.search)
+        self.search_button.clicked.connect(self.search)
+        self.remove_button.clicked.connect(self.remove)
+        self.top_checkbox.stateChanged.connect(self.set_window_flag)
 
         self.open_action = self.findChild(QAction, "open_action")
         self.save_action = self.findChild(QAction, "save_action")
@@ -37,17 +44,13 @@ class DictionaryUI(QMainWindow):
         self.view_action.triggered.connect(self.view)
         self.clear_action.triggered.connect(self.clear)
 
+        self.save_action.setShortcut("Ctrl+S")
+
         self.theme_default_action = self.findChild(QAction, "theme_default_action")
         self.theme_dark_action = self.findChild(QAction, "theme_dark_action")
 
         self.theme_default_action.triggered.connect(lambda: self.set_theme(""))
         self.theme_dark_action.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
-
-        self.word_input.returnPressed.connect(self.search)
-        self.search_button.clicked.connect(self.search)
-        self.top_checkbox.stateChanged.connect(self.set_window_flag)
-
-        self.save_action.setShortcut("Ctrl+S")
 
         self.completer = QCompleter(self.dict.get_words())
         self.word_input.setCompleter(self.completer)
@@ -69,11 +72,11 @@ class DictionaryUI(QMainWindow):
                 return
 
             if self.learn_checkbox.isChecked():
-                self.dict.add_vocab(vocab)
+                self.dict.add(vocab)
                 self.completer.model().setStringList(self.dict.get_words())
 
                 if self.view_ui != None:
-                    self.view_ui.update_item(vocab.word)
+                    self.view_ui.add_item(vocab.word)
 
         self.cluster_list.clear()
 
@@ -119,6 +122,21 @@ class DictionaryUI(QMainWindow):
 
         self.dict.sort()
 
+    def remove(self) -> None:
+        word = self.word_input.text()
+
+        if word == "":
+            return
+
+        self.dict.remove(word)
+        self.completer.model().setStringList(self.dict.get_words())
+
+        if self.view_ui != None:
+            self.view_ui.remove_item(word)
+
+        self.cluster_list.clear()
+        self.word_input.setText("")
+
     def open(self) -> None:
         dialog = QFileDialog()
         dialog.setDefaultSuffix("json")
@@ -152,8 +170,13 @@ class DictionaryUI(QMainWindow):
 
     def clear(self) -> None:
         self.dict = Dictionary()
+        self.cluster_list.clear()
         self.completer = QCompleter(self.dict.get_words())
         self.word_input.setCompleter(self.completer)
+        self.word_input.setText("")
+
+        if self.view_ui != None:
+            self.view_ui.clear_item()
 
     def set_window_flag(self) -> None:
         if self.top_checkbox.isChecked():
@@ -196,12 +219,12 @@ class ViewUI(QMainWindow):
         self.vocab_list.itemDoubleClicked.connect(self.view_vocab)
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setStyleSheet(dict_ui.styleSheet())
+        self.setStyleSheet(self.dict_ui.styleSheet())
 
-        for word in self.dict.vocabs:
+        for vocab in self.dict.get_vocabs():
             item = QListWidgetItem()
-            item.setData(Qt.UserRole, self.dict.vocabs[word])
-            item.setText(word)
+            item.setData(Qt.UserRole, vocab)
+            item.setText(vocab.word)
             self.vocab_list.addItem(item)
 
     def view_vocab(self, item: QListWidgetItem) -> None:
@@ -214,30 +237,38 @@ class ViewUI(QMainWindow):
         if word == "":
             self.reset_list()
 
-        vocabs = self.dict.get_vocabs_by_prefix(word)
+        prefix_vocabs = self.dict.get_vocabs_by_prefix(word)
 
         self.vocab_list.clear()
 
-        for vocab in vocabs:
+        for vocab in prefix_vocabs:
             item = QListWidgetItem()
-            item.setData(Qt.UserRole, self.dict.vocabs[vocab.word])
+            item.setData(Qt.UserRole, vocab)
             item.setText(vocab.word)
             self.vocab_list.addItem(item)
 
-    def update_item(self, word: str) -> None:
+    def add_item(self, word: str) -> None:
         item = QListWidgetItem()
-        item.setData(Qt.UserRole, self.dict.vocabs[word])
+        item.setData(Qt.UserRole, self.dict.get_vocab(word))
         item.setText(word)
         self.vocab_list.addItem(item)
         self.vocab_list.sortItems()
 
+    def remove_item(self, word: str) -> None:
+        left = bisect_left(self.dict.get_words(), word)
+        self.vocab_list.takeItem(left)
+
+    def clear_item(self) -> None:
+        self.dict.clear()
+        self.vocab_list.clear()
+
     def reset_list(self) -> None:
         self.vocab_list.clear()
 
-        for word in self.dict.vocabs:
+        for vocab in self.dict.get_vocabs():
             item = QListWidgetItem()
-            item.setData(Qt.UserRole, self.dict.vocabs[word])
-            item.setText(word)
+            item.setData(Qt.UserRole, vocab)
+            item.setText(vocab.word)
             self.vocab_list.addItem(item)
 
 if __name__ == "__main__":

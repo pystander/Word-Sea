@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
-      <width>150</width>
-      <height>20</height>
+      <y>9</y>
+      <width>151</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -37,9 +37,9 @@
     <property name="geometry">
      <rect>
       <x>170</x>
-      <y>10</y>
+      <y>9</y>
       <width>81</width>
-      <height>20</height>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -65,10 +65,10 @@
    <widget class="QCheckBox" name="learn_checkbox">
     <property name="geometry">
      <rect>
-      <x>260</x>
-      <y>10</y>
-      <width>50</width>
-      <height>20</height>
+      <x>630</x>
+      <y>9</y>
+      <width>51</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -81,10 +81,10 @@
    <widget class="QCheckBox" name="top_checkbox">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>10</y>
-      <width>100</width>
-      <height>20</height>
+      <x>689</x>
+      <y>9</y>
+      <width>101</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -92,6 +92,25 @@
     </property>
     <property name="checked">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="remove_button">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>10</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Remove</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>
