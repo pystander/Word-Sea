@@ -1,13 +1,18 @@
 import sys
+import os
+
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
+
 from dict.dictionary import Dictionary
 from api.cambridge import fetch
 from utils.search import bisect_left
 
-DICT_PATH = "data/dictionary.json"
+DATA_DIR = "data/"
+DICT_PATH = DATA_DIR + "dictionary.json"
+
 
 class DictionaryUI(QMainWindow):
     def __init__(self) -> None:
@@ -271,7 +276,11 @@ class ViewUI(QMainWindow):
             item.setText(vocab.word)
             self.vocab_list.addItem(item)
 
+
 if __name__ == "__main__":
+    if not os.path.exists(DATA_DIR):
+        os.mkdir(DATA_DIR)
+
     app = QApplication(sys.argv)
 
     window = DictionaryUI()

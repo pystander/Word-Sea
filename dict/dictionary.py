@@ -1,5 +1,8 @@
 import json
+import os
+
 from utils.search import bisect_left
+
 
 class Cluster:
     """
@@ -28,6 +31,7 @@ class Cluster:
     def add_related(self, related: str) -> None:
         self.related.append(related)
 
+
 class Vocabulary:
     """
     A word defined by Cluster(s).
@@ -48,6 +52,7 @@ class Vocabulary:
 
     def get_size(self) -> int:
         return len(self.clusters)
+
 
 class Dictionary:
     """
@@ -90,6 +95,9 @@ class Dictionary:
         self.vocabs = dict(sorted(self.vocabs.items()))
 
     def read_json(self, path: str) -> None:
+        if not os.path.exists(path):
+            return
+
         with open(path, "r") as f:
             data = json.load(f)
 
@@ -124,5 +132,5 @@ class Dictionary:
 
                 data[word] = cluster_dict
 
-        with open(path, "w") as f:
+        with open(path, "w+") as f:
             json.dump(data, f, indent=4)
