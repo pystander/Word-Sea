@@ -1,4 +1,8 @@
 import json
+import os
+
+from utils.search import bisect_left
+
 
 class Cluster:
     """
@@ -27,6 +31,7 @@ class Cluster:
     def add_related(self, related: str) -> None:
         self.related.append(related)
 
+
 class Vocabulary:
     """
     A word defined by Cluster(s).
@@ -48,6 +53,7 @@ class Vocabulary:
     def get_size(self) -> int:
         return len(self.clusters)
 
+
 class Dictionary:
     """
     A collection of Vocabulary(s).
@@ -56,19 +62,42 @@ class Dictionary:
     def __init__(self) -> None:
         self.vocabs = {}
 
-    def add_vocab(self, vocab: Vocabulary) -> None:
+    def add(self, vocab: Vocabulary) -> None:
         self.vocabs[vocab.word] = vocab
+
+    def remove(self, word: str) -> None:
+        del self.vocabs[word]
+
+    def clear(self) -> None:
+        self.vocabs.clear()
 
     def get_vocab(self, word: str) -> Vocabulary | None:
         return self.vocabs.get(word, None)
 
+    def get_vocabs(self) -> list[Vocabulary]:
+        return [self.vocabs[word] for word in self.vocabs]
+
     def get_vocabs_by_prefix(self, prefix: str) -> list[Vocabulary]:
-        return [self.vocabs[word] for word in self.vocabs if word.startswith(prefix)]
+        words = list(self.vocabs.keys())
+
+        if prefix == "":
+            return [self.vocabs[word] for word in words]
+
+        left = bisect_left(words, prefix)
+        right = bisect_left(words, prefix[:-1] + chr(ord(prefix[-1]) + 1))
+
+        return [self.vocabs[word] for word in words[left:right]]
 
     def get_words(self) -> list[str]:
         return [word for word in self.vocabs]
 
+    def sort(self) -> None:
+        self.vocabs = dict(sorted(self.vocabs.items()))
+
     def read_json(self, path: str) -> None:
+        if not os.path.exists(path):
+            return
+
         with open(path, "r") as f:
             data = json.load(f)
 
@@ -84,7 +113,7 @@ class Dictionary:
 
                 vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
 
-            self.add_vocab(vocab)
+            self.add(vocab)
 
     def to_json(self, path) -> None:
         data = {}
@@ -103,5 +132,5 @@ class Dictionary:
 
                 data[word] = cluster_dict
 
-        with open(path, "w") as f:
-            json.dump(data, f, indent=4, sort_keys=True)
+        with open(path, "w+") as f:
+            json.dump(data, f, indent=4)

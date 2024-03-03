@@ -29,8 +29,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>150</width>
-      <height>20</height>
+      <width>151</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -41,25 +41,6 @@
     </property>
     <property name="clearButtonEnabled">
      <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="search_button">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>10</y>
-      <width>81</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Search</string>
-    </property>
-    <property name="autoDefault">
-     <bool>false</bool>
-    </property>
-    <property name="default">
-     <bool>false</bool>
     </property>
    </widget>
   </widget>
