@@ -1,10 +1,13 @@
 import requests
 import re
+
 from bs4 import BeautifulSoup
+
 from dict.dictionary import Cluster, Vocabulary
 
 BASE_URL = "https://dictionary.cambridge.org/dictionary/english/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"}
+
 
 def fetch(search_word: str) -> Vocabulary | None:
     """
