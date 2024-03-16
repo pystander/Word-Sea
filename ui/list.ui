@@ -11,10 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>View</string>
+   <string>List</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="vocab_list">
+   <widget class="QListWidget" name="list_vocab">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -24,7 +24,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="word_input">
+   <widget class="QLineEdit" name="line_input">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -44,17 +44,6 @@
     </property>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>300</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

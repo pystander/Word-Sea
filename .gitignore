@@ -160,7 +160,7 @@ cython_debug/
 #.idea/
 
 # Dictionary data
-data/
+data/*.csv
 
 # Testing
 test.py
