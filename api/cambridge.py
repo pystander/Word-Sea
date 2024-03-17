@@ -107,10 +107,11 @@ def fetch(search_word: str) -> Vocabulary | None:
                 ddef = def_block.find("div", class_="def ddef_d db")
                 dexamp = def_block.find("div", class_="examp dexamp")
 
-                meanings.append(ddef.text.lstrip().rstrip(": ").replace('\n', ''))
+                if ddef:
+                    meanings.append(ddef.text.lstrip().rstrip(": ").replace("\n", ""))
 
-                if dexamp != None:
-                    examples.append(dexamp.text.lstrip().rstrip(": ").replace('\n', ''))
+                if dexamp:
+                    examples.append(dexamp.text.lstrip().rstrip(": ").replace("\n", ""))
 
             vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
 
