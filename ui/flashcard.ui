@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Flashcard</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="widget_central">
    <widget class="QListWidget" name="list_cluster">
     <property name="geometry">
      <rect>

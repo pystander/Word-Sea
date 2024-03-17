@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QCloseEvent
 
-from models.dictionary import Vocabulary
 from models.flashcard import FlashCard
 
 if TYPE_CHECKING:
@@ -21,7 +20,7 @@ class FlashCardWindow(QMainWindow):
         self.window_id = window_id
 
         self.flashcard = FlashCard(self.controller.dict)
-        self.vocab = None
+        self.vocab = self.flashcard.get_next_vocab()
 
         # Widgets
         self.button_learn = self.findChild(QPushButton, "button_learn")
@@ -39,7 +38,6 @@ class FlashCardWindow(QMainWindow):
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # Initialize
-        self.vocab = self.flashcard.get_next_vocab()
         self.show_vocab()
 
     def progress(self, is_learn: bool) -> None:
@@ -50,6 +48,7 @@ class FlashCardWindow(QMainWindow):
 
         if self.flashcard.is_completed:
             self.controller.close_window(self.window_id)
+            return
 
         self.vocab = self.flashcard.get_next_vocab()
         self.show_vocab()
@@ -97,3 +96,9 @@ class FlashCardWindow(QMainWindow):
 
             item.setText(cluster_text)
             self.list_cluster.addItem(item)
+
+    # Override
+    def closeEvent(self, clost_event: QCloseEvent) -> None:
+        self.controller.close_window(self.window_id)
+
+        return super().closeEvent(clost_event)
