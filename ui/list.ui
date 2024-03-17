@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>window_list</class>
+ <widget class="QMainWindow" name="window_list">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>List</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="widget_central">
    <widget class="QListWidget" name="list_vocab">
     <property name="geometry">
      <rect>

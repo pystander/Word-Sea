@@ -1,8 +1,14 @@
 # Word-Sea
-![size](https://img.shields.io/github/repo-size/pystander/Word-Sea)
-
 `Word-Sea` is a simple pure-Python application developed for vocabulary learning and revision.
 It is particularly designed to assist students to learn and memorize new vocabularies.
+
+<p align=center>
+    <img src="docs/WordSea_MVC.png">
+</p>
+
+<p align=center>
+    (Created using <a href="https://app.diagrams.net">draw.io</a>, with icons from <a href="https://www.flaticon.com">Flaticon</a>)
+</p>
 
 
 ## Features

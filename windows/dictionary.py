@@ -20,38 +20,45 @@ class DictionaryWindow(QMainWindow):
         self.controller = controller
         self.window_id = window_id
 
+        # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
         self.button_search = self.findChild(QPushButton, "button_search")
+        self.button_clear = self.findChild(QPushButton, "button_clear")
         self.button_remove = self.findChild(QPushButton, "button_remove")
+        self.checkbox_learn = self.findChild(QCheckBox, "checkbox_learn")
         self.list_cluster = self.findChild(QListWidget, "list_cluster")
 
         self.line_input.returnPressed.connect(self.search)
         self.button_search.clicked.connect(self.search)
+        self.button_clear.clicked.connect(self.clear)
         self.button_remove.clicked.connect(self.remove)
-
-        self.action_open = self.findChild(QAction, "action_open")
-        self.action_save = self.findChild(QAction, "action_save")
-        self.action_save_as = self.findChild(QAction, "action_save_as")
-        self.action_clear = self.findChild(QAction, "action_clear")
-        self.action_list = self.findChild(QAction, "action_list")
-
-        self.action_open.triggered.connect(self.open)
-        self.action_save.triggered.connect(self.save)
-        self.action_save_as.triggered.connect(self.save_as)
-        self.action_clear.triggered.connect(self.clear)
-        self.action_list.triggered.connect(self.open_list_window)
-
-        self.action_save.setShortcut("Ctrl+S")
-
-        self.action_theme_default = self.findChild(QAction, "action_theme_default")
-        self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
-
-        self.action_theme_default.triggered.connect(lambda: self.set_theme(""))
-        self.action_theme_dark.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
 
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
 
+        # File menu
+        self.action_open = self.findChild(QAction, "action_open")
+        self.action_save = self.findChild(QAction, "action_save")
+        self.action_save_as = self.findChild(QAction, "action_save_as")
+        self.action_reset = self.findChild(QAction, "action_reset")
+
+        self.action_open.triggered.connect(self.open)
+        self.action_save.triggered.connect(self.save)
+        self.action_save_as.triggered.connect(self.save_as)
+        self.action_reset.triggered.connect(self.reset)
+
+        self.action_save.setShortcut("Ctrl+S")
+
+        # View menu
+        self.action_theme_default = self.findChild(QAction, "action_theme_default")
+        self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
+        self.action_list = self.findChild(QAction, "action_list")
+
+        self.action_theme_default.triggered.connect(lambda: self.set_theme(""))
+        self.action_theme_dark.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
+        self.action_list.triggered.connect(self.create_list_window)
+
+        # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     def search(self) -> None:
@@ -72,12 +79,29 @@ class DictionaryWindow(QMainWindow):
                 self.controller.dict.add_vocab(vocab)
                 self.completer.model().setStringList(self.controller.dict.get_words())
 
-                try:
+                if "list" in self.controller.windows:
                     self.controller.windows["list"].add_item(vocab.word)
-                except:
-                    pass
 
         self.show_vocab(vocab)
+
+    def clear(self) -> None:
+        self.list_cluster.clear()
+        self.line_input.setText("")
+
+    def remove(self) -> None:
+        if self.list_cluster.count() == 0:
+            return
+
+        word = self.list_cluster.item(0).text()
+        self.controller.dict.remove_word(word)
+        self.completer.model().setStringList(self.controller.dict.get_words())
+
+        self.list_cluster.clear()
+        self.line_input.setText("")
+
+        if "list" in self.controller.windows:
+            window_list = self.controller.windows["list"]
+            window_list.remove_item(word)
 
     def show_vocab(self, vocab: Vocabulary) -> None:
         font = QFont()
@@ -124,22 +148,6 @@ class DictionaryWindow(QMainWindow):
 
         self.controller.dict.sort()
 
-    def remove(self) -> None:
-        word = self.list_cluster.item(0).text()
-
-        if word == "":
-            return
-
-        self.controller.dict.remove_word(word)
-        self.completer.model().setStringList(self.controller.dict.get_words())
-        self.list_cluster.clear()
-        self.line_input.setText("")
-
-        try:
-            self.controller.windows["list"].remove_item(word)
-        except:
-            pass
-
     def open(self) -> None:
         dialog = QFileDialog()
         dialog.setDefaultSuffix("csv")
@@ -164,10 +172,7 @@ class DictionaryWindow(QMainWindow):
             self.controller.dict.to_csv(file_name)
             self.controller.dict_path = file_name
 
-    def open_list_window(self) -> None:
-        self.controller.open_window("list")
-
-    def clear(self) -> None:
+    def reset(self) -> None:
         self.controller.dict = Dictionary()
         self.list_cluster.clear()
         self.completer = QCompleter(self.controller.dict.get_words())
@@ -181,6 +186,9 @@ class DictionaryWindow(QMainWindow):
         with open(path, "r") as f:
             return f.read()
 
+    def create_list_window(self) -> None:
+        self.controller.create_window("list")
+
     def set_theme(self, path: str) -> None:
         if path == "":
             self.controller.set_theme("")
@@ -188,6 +196,7 @@ class DictionaryWindow(QMainWindow):
             qss = self.read_qss(path)
             self.controller.set_theme(qss)
 
+    # Override
     def closeEvent(self, clost_event: QCloseEvent) -> None:
         self.save()
         self.controller.close_window(self.window_id)

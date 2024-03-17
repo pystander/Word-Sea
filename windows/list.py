@@ -19,6 +19,7 @@ class ListWindow(QMainWindow):
         self.controller = controller
         self.window_id = window_id
 
+        # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
         self.list_vocab = self.findChild(QListWidget, "list_vocab")
 
@@ -26,21 +27,19 @@ class ListWindow(QMainWindow):
         self.line_input.textChanged.connect(self.search)
         self.list_vocab.itemDoubleClicked.connect(self.view_vocab)
 
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
-
         for vocab in self.controller.dict.get_vocabs():
             item = QListWidgetItem()
             item.setData(Qt.UserRole, vocab)
             item.setText(vocab.word)
             self.list_vocab.addItem(item)
 
+        # Window settings
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+
     def view_vocab(self, item: QListWidgetItem) -> None:
-        try:
-            window_dict = self.controller.windows["dict"]
-            window_dict.line_input.setText(item.text())
-            window_dict.search()
-        except:
-            pass
+        if "dict" in self.controller.windows:
+            self.controller.windows["dict"].line_input.setText(item.text())
+            self.controller.windows["dict"].search()
 
     def search(self) -> None:
         word = self.line_input.text()
@@ -48,11 +47,9 @@ class ListWindow(QMainWindow):
         if word == "":
             self.reset_list()
 
-        prefix_vocabs = self.controller.dict.get_vocabs_by_prefix(word)
-
         self.list_vocab.clear()
 
-        for vocab in prefix_vocabs:
+        for vocab in self.controller.dict.get_vocabs_by_prefix(word):
             item = QListWidgetItem()
             item.setData(Qt.UserRole, vocab)
             item.setText(vocab.word)
@@ -81,7 +78,7 @@ class ListWindow(QMainWindow):
             item.setText(vocab.word)
             self.list_vocab.addItem(item)
 
+    # Override
     def closeEvent(self, clost_event: QCloseEvent) -> None:
         self.controller.close_window(self.window_id)
-
         return super().closeEvent(clost_event)

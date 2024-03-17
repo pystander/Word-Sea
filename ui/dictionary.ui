@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>window_dictionary</class>
+ <widget class="QMainWindow" name="window_dictionary">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Dictionary</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="widget_central">
    <widget class="QLineEdit" name="line_input">
     <property name="geometry">
      <rect>
@@ -78,10 +78,29 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="button_remove">
+   <widget class="QPushButton" name="button_clear">
     <property name="geometry">
      <rect>
       <x>260</x>
+      <y>10</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Clear</string>
+    </property>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_remove">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
       <y>10</y>
       <width>81</width>
       <height>21</height>
@@ -114,7 +133,7 @@
     <addaction name="action_open"/>
     <addaction name="action_save"/>
     <addaction name="action_save_as"/>
-    <addaction name="action_clear"/>
+    <addaction name="action_reset"/>
    </widget>
    <widget class="QMenu" name="menu_view">
     <property name="title">
@@ -163,9 +182,9 @@
     <string>List</string>
    </property>
   </action>
-  <action name="action_clear">
+  <action name="action_reset">
    <property name="text">
-    <string>Clear</string>
+    <string>Reset</string>
    </property>
   </action>
   <action name="action_theme_default">
