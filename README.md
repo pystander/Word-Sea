@@ -7,7 +7,7 @@ It is particularly designed to assist students to learn and memorize new vocabul
 </p>
 
 <p align=center>
-    (Created using <a href="https://app.diagrams.net">draw.io</a>, with icons from <a href="https://www.flaticon.com">Flaticon</a>)
+    (Made with <a href="https://app.diagrams.net">draw.io</a>, with icons created by <a href="https://www.flaticon.com/authors/freepik">Freepik</a> from <a href="https://www.flaticon.com)">Flaticon</a>)
 </p>
 
 
