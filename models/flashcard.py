@@ -23,6 +23,7 @@ class FlashCard:
         if len(self.learned) == 0:
             return random.choice(list(self.learning))
 
+        # Larger learning ratio means higher chance of learning
         rand = random.random()
 
         if rand <= self.learning_ratio:

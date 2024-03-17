@@ -21,6 +21,7 @@ class FlashCardWindow(QMainWindow):
         self.window_id = window_id
 
         self.flashcard = FlashCard(self.controller.dict)
+        self.vocab = None
 
         # Widgets
         self.button_learn = self.findChild(QPushButton, "button_learn")
@@ -37,35 +38,35 @@ class FlashCardWindow(QMainWindow):
         # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
-    def progress(self, is_learn: bool) -> None:
-        vocab = self.flashcard.get_next_vocab()
-        self.show_vocab(vocab)
+        # Initialize
+        self.vocab = self.flashcard.get_next_vocab()
+        self.show_vocab()
 
+    def progress(self, is_learn: bool) -> None:
         if is_learn:
-            self.flashcard.learn(vocab)
+            self.flashcard.learn(self.vocab)
         else:
-            self.flashcard.unlearn(vocab)
+            self.flashcard.unlearn(self.vocab)
 
         if self.flashcard.is_completed:
             self.controller.close_window(self.window_id)
 
-        self.update_progress_bar()
-
-    def update_progress_bar(self) -> None:
+        self.vocab = self.flashcard.get_next_vocab()
+        self.show_vocab()
         self.progress_learned.setValue(len(self.flashcard.learned))
 
-    def show_vocab(self, vocab: "Vocabulary") -> None:
+    def show_vocab(self) -> None:
         font = QFont()
         font.setBold(True)
 
         item = QListWidgetItem()
-        item.setText(vocab.word)
+        item.setText(self.vocab.word)
         item.setFont(font)
 
         self.list_cluster.clear()
         self.list_cluster.addItem(item)
 
-        for pos, cluster in vocab.clusters.items():
+        for pos, cluster in self.vocab.clusters.items():
             meanings = cluster.meanings
             examples = cluster.examples
             synonyms = cluster.synonyms
