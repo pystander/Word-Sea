@@ -1,5 +1,5 @@
-import json
 import os
+import csv
 
 from utils.search import bisect_left
 
@@ -47,8 +47,23 @@ class Vocabulary:
     def __lt__(self, other) -> bool:
         return self.word < other.word
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Vocabulary):
+            return False
+
+        return self.word == other.word
+
+    def __hash__(self) -> int:
+        return hash(self.word)
+
+    def __repr__(self) -> str:
+        return self.word
+
     def add_cluster(self, pos: str, cluster: Cluster) -> None:
         self.clusters[pos] = cluster
+
+    def get_cluster(self, pos: str) -> Cluster | None:
+        return self.clusters.get(pos, None)
 
     def get_size(self) -> int:
         return len(self.clusters)
@@ -62,10 +77,13 @@ class Dictionary:
     def __init__(self) -> None:
         self.vocabs = {}
 
-    def add(self, vocab: Vocabulary) -> None:
+    def __len__(self) -> int:
+        return len(self.vocabs)
+
+    def add_vocab(self, vocab: Vocabulary) -> None:
         self.vocabs[vocab.word] = vocab
 
-    def remove(self, word: str) -> None:
+    def remove_word(self, word: str) -> None:
         del self.vocabs[word]
 
     def clear(self) -> None:
@@ -94,43 +112,42 @@ class Dictionary:
     def sort(self) -> None:
         self.vocabs = dict(sorted(self.vocabs.items()))
 
-    def read_json(self, path: str) -> None:
+    def to_csv(self, path: str, delim: str = "|") -> None:
+        with open(path, "w+", newline="") as f:
+            fields = ["word", "pos", "meanings", "examples", "synonyms", "antonyms", "related"]
+            writer = csv.writer(f, fields)
+
+            for word in self.vocabs:
+                vocab = self.vocabs[word]
+
+                for pos, cluster in vocab.clusters.items():
+                    meanings = delim.join(cluster.meanings)
+                    examples = delim.join(cluster.examples)
+                    synonyms = delim.join(cluster.synonyms)
+                    antonyms = delim.join(cluster.antonyms)
+                    related = delim.join(cluster.related)
+
+                    writer.writerow([word, pos, meanings, examples, synonyms, antonyms, related])
+
+    def from_csv(self, path: str, delim: str = "|") -> None:
         if not os.path.exists(path):
             return
 
-        with open(path, "r") as f:
-            data = json.load(f)
+        with open(path, "r", newline="") as f:
+            reader = csv.reader(f)
 
-        for word, cluster_dict in data.items():
-            vocab = Vocabulary(word)
+            for row in reader:
+                word, pos, meanings, examples, synonyms, antonyms, related = row
+                meanings = meanings.split(delim)
+                examples = examples.split(delim)
+                synonyms = synonyms.split(delim)
+                antonyms = antonyms.split(delim)
+                related = related.split(delim)
 
-            for pos, cluster in cluster_dict.items():
-                meanings = cluster["meanings"]
-                examples = cluster["examples"]
-                synonyms = cluster["synonyms"]
-                antonyms = cluster["antonyms"]
-                related = cluster["related"]
+                vocab = self.get_vocab(word)
+
+                if vocab == None:
+                    vocab = Vocabulary(word)
 
                 vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
-
-            self.add(vocab)
-
-    def to_json(self, path) -> None:
-        data = {}
-
-        for word in self.vocabs:
-            cluster_dict = {}
-
-            for pos, cluster in self.vocabs[word].clusters.items():
-                cluster_dict[pos] = {
-                    "meanings": cluster.meanings,
-                    "examples": cluster.examples,
-                    "synonyms": cluster.synonyms,
-                    "antonyms": cluster.antonyms,
-                    "related": cluster.related
-                }
-
-                data[word] = cluster_dict
-
-        with open(path, "w+") as f:
-            json.dump(data, f, indent=4)
+                self.add_vocab(vocab)

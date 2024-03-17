@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont, QCloseEvent
 
 from api.cambridge import fetch
-from models.dict import Vocabulary, Dictionary
+from models.dictionary import Vocabulary, Dictionary
 
 if TYPE_CHECKING:
     from app import WindowController
@@ -53,10 +53,12 @@ class DictionaryWindow(QMainWindow):
         self.action_theme_default = self.findChild(QAction, "action_theme_default")
         self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
         self.action_list = self.findChild(QAction, "action_list")
+        self.action_flashcard = self.findChild(QAction, "action_flashcard")
 
         self.action_theme_default.triggered.connect(lambda: self.set_theme(""))
         self.action_theme_dark.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
-        self.action_list.triggered.connect(self.create_list_window)
+        self.action_list.triggered.connect(lambda: self.controller.create_window("list"))
+        self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
 
         # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -185,9 +187,6 @@ class DictionaryWindow(QMainWindow):
     def read_qss(self, path: str) -> str:
         with open(path, "r") as f:
             return f.read()
-
-    def create_list_window(self) -> None:
-        self.controller.create_window("list")
 
     def set_theme(self, path: str) -> None:
         if path == "":

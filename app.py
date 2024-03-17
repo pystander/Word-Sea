@@ -3,15 +3,17 @@ import os
 
 from PyQt5.QtWidgets import QApplication
 
-from models.dict import Dictionary
+from models.dictionary import Dictionary
 from windows.dictionary import DictionaryWindow
 from windows.list import ListWindow
+from windows.flashcard import FlashCardWindow
 
 DATA_DIR = "data/"
 DICT_PATH = DATA_DIR + "dictionary.csv"
 WINDOW_CLASSES = {
     "dict": DictionaryWindow,
     "list": ListWindow,
+    "flashcard": FlashCardWindow
 }
 
 
