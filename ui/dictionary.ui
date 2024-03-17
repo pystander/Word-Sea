@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>window_dictionary</class>
+ <widget class="QMainWindow" name="window_dictionary">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Dictionary</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <widget class="QLineEdit" name="word_input">
+  <widget class="QWidget" name="widget_central">
+   <widget class="QLineEdit" name="line_input">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -33,7 +33,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="search_button">
+   <widget class="QPushButton" name="button_search">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -52,7 +52,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QListWidget" name="cluster_list">
+   <widget class="QListWidget" name="list_cluster">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -62,10 +62,10 @@
      </rect>
     </property>
    </widget>
-   <widget class="QCheckBox" name="learn_checkbox">
+   <widget class="QCheckBox" name="checkbox_learn">
     <property name="geometry">
      <rect>
-      <x>630</x>
+      <x>740</x>
       <y>9</y>
       <width>51</width>
       <height>21</height>
@@ -78,26 +78,29 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="top_checkbox">
+   <widget class="QPushButton" name="button_clear">
     <property name="geometry">
      <rect>
-      <x>689</x>
-      <y>9</y>
-      <width>101</width>
+      <x>260</x>
+      <y>10</y>
+      <width>81</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Window on Top</string>
+     <string>Clear</string>
     </property>
-    <property name="checked">
-     <bool>true</bool>
+    <property name="autoDefault">
+     <bool>false</bool>
+    </property>
+    <property name="default">
+     <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="remove_button">
+   <widget class="QPushButton" name="button_remove">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>350</x>
       <y>10</y>
       <width>81</width>
       <height>21</height>
@@ -123,15 +126,14 @@
      <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
-     <string>Menu</string>
+     <string>File</string>
     </property>
-    <addaction name="open_action"/>
-    <addaction name="save_action"/>
-    <addaction name="save_as_action"/>
-    <addaction name="view_action"/>
-    <addaction name="clear_action"/>
+    <addaction name="action_open"/>
+    <addaction name="action_save"/>
+    <addaction name="action_save_as"/>
+    <addaction name="action_reset"/>
    </widget>
    <widget class="QMenu" name="menu_view">
     <property name="title">
@@ -141,12 +143,13 @@
      <property name="title">
       <string>Theme</string>
      </property>
-     <addaction name="theme_default_action"/>
-     <addaction name="theme_dark_action"/>
+     <addaction name="action_theme_default"/>
+     <addaction name="action_theme_dark"/>
     </widget>
     <addaction name="menu_theme"/>
+    <addaction name="action_list"/>
    </widget>
-   <addaction name="menu"/>
+   <addaction name="menu_file"/>
    <addaction name="menu_view"/>
   </widget>
   <action name="action_add">
@@ -154,17 +157,17 @@
     <string>Add Vocabulary</string>
    </property>
   </action>
-  <action name="save_as_action">
+  <action name="action_save_as">
    <property name="text">
     <string>Save As</string>
    </property>
   </action>
-  <action name="save_action">
+  <action name="action_save">
    <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="open_action">
+  <action name="action_open">
    <property name="text">
     <string>Open</string>
    </property>
@@ -174,24 +177,29 @@
     <string>View</string>
    </property>
   </action>
-  <action name="view_action">
+  <action name="action_list">
    <property name="text">
-    <string>View List</string>
+    <string>List</string>
    </property>
   </action>
-  <action name="clear_action">
+  <action name="action_reset">
    <property name="text">
-    <string>Clear</string>
+    <string>Reset</string>
    </property>
   </action>
-  <action name="theme_default_action">
+  <action name="action_theme_default">
    <property name="text">
     <string>Default</string>
    </property>
   </action>
-  <action name="theme_dark_action">
+  <action name="action_theme_dark">
    <property name="text">
     <string>Dark</string>
+   </property>
+  </action>
+  <action name="action_flashcard">
+   <property name="text">
+    <string>Flashcard</string>
    </property>
   </action>
  </widget>
