@@ -7,18 +7,16 @@ from PyQt5.QtGui import QFont, QCloseEvent
 
 from api.cambridge import fetch
 from models.dictionary import Vocabulary
+from windows.window import Window
 
 if TYPE_CHECKING:
     from app import WindowController
 
 
-class DictionaryWindow(QMainWindow):
+class DictionaryWindow(Window):
     def __init__(self, controller: "WindowController", window_id="dict") -> None:
-        super(DictionaryWindow, self).__init__()
+        super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
-
-        self.controller = controller
-        self.window_id = window_id
 
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
@@ -196,7 +194,6 @@ class DictionaryWindow(QMainWindow):
             self.controller.set_theme(qss)
 
     # Override
-    def closeEvent(self, clost_event: QCloseEvent) -> None:
+    def closeEvent(self, close_event: QCloseEvent) -> None:
         self.save()
-
-        return super().closeEvent(clost_event)
+        return super().closeEvent(close_event)

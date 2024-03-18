@@ -3,21 +3,19 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QCloseEvent
 
 from models.flashcard import FlashCard
+from windows.window import Window
 
 if TYPE_CHECKING:
     from app import WindowController
 
 
-class FlashCardWindow(QMainWindow):
+class FlashCardWindow(Window):
     def __init__(self, controller: "WindowController", window_id="flashcard") -> None:
-        super(FlashCardWindow, self).__init__()
+        super(FlashCardWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/flashcard.ui", self)
-
-        self.controller = controller
-        self.window_id = window_id
 
         self.flashcard = FlashCard(self.controller.dict)
         self.vocab = self.flashcard.get_next_vocab()
@@ -47,7 +45,7 @@ class FlashCardWindow(QMainWindow):
             self.flashcard.unlearn(self.vocab)
 
         if self.flashcard.is_completed:
-            self.controller.close_window(self.window_id)
+            self.close()
             return
 
         self.vocab = self.flashcard.get_next_vocab()

@@ -36,10 +36,6 @@ class WindowController:
             getattr(window, func_name)(*args, **kwargs)
 
     def create_window(self, id: str) -> None:
-        if id in self.windows:
-            self.windows[id].show()
-            return
-
         window = WINDOW_CLASSES[id](self)
         self.windows[window.window_id] = window
         window.setStyleSheet(self.stylesheet)
@@ -47,9 +43,13 @@ class WindowController:
         window.show()
 
     def close_window(self, id: str) -> None:
+        print(self.windows)
+
         if id in self.windows:
             self.windows[id].close()
             del self.windows[id]
+
+        print(self.windows)
 
     def set_theme(self, qss="") -> None:
         self.stylesheet = qss
