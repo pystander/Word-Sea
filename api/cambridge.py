@@ -3,7 +3,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from models.dict import Cluster, Vocabulary
+from models.dictionary import Cluster, Vocabulary
 
 BASE_URL = "https://dictionary.cambridge.org/dictionary/english/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"}
@@ -107,10 +107,11 @@ def fetch(search_word: str) -> Vocabulary | None:
                 ddef = def_block.find("div", class_="def ddef_d db")
                 dexamp = def_block.find("div", class_="examp dexamp")
 
-                meanings.append(ddef.text.lstrip().rstrip(": ").replace('\n', ''))
+                if ddef:
+                    meanings.append(ddef.text.lstrip().rstrip(": ").replace("\n", ""))
 
-                if dexamp != None:
-                    examples.append(dexamp.text.lstrip().rstrip(": ").replace('\n', ''))
+                if dexamp:
+                    examples.append(dexamp.text.lstrip().rstrip(": ").replace("\n", ""))
 
             vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
 

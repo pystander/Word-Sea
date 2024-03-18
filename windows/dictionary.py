@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont, QCloseEvent
 
 from api.cambridge import fetch
-from models.dict import Vocabulary, Dictionary
+from models.dictionary import Vocabulary
 
 if TYPE_CHECKING:
     from app import WindowController
@@ -53,10 +53,12 @@ class DictionaryWindow(QMainWindow):
         self.action_theme_default = self.findChild(QAction, "action_theme_default")
         self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
         self.action_list = self.findChild(QAction, "action_list")
+        self.action_flashcard = self.findChild(QAction, "action_flashcard")
 
         self.action_theme_default.triggered.connect(lambda: self.set_theme(""))
         self.action_theme_dark.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
-        self.action_list.triggered.connect(self.create_list_window)
+        self.action_list.triggered.connect(lambda: self.controller.create_window("list"))
+        self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
 
         # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
@@ -154,11 +156,11 @@ class DictionaryWindow(QMainWindow):
         file_name, _ = dialog.getOpenFileName(self, "QFileDialog.getSaveFileName()", "", "CSV (*.csv)")
 
         if file_name:
-            self.controller.dict = Dictionary()
+            self.controller.dict.reset()
             self.controller.dict.from_csv(file_name)
 
-        self.completer.model().setStringList(self.controller.dict.get_words())
-        self.controller.dict_path = file_name
+            self.completer.model().setStringList(self.controller.dict.get_words())
+            self.controller.dict_path = file_name
 
     def save(self) -> None:
         self.controller.dict.to_csv(self.controller.dict_path)
@@ -173,7 +175,7 @@ class DictionaryWindow(QMainWindow):
             self.controller.dict_path = file_name
 
     def reset(self) -> None:
-        self.controller.dict = Dictionary()
+        self.controller.dict.reset()
         self.list_cluster.clear()
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
@@ -186,9 +188,6 @@ class DictionaryWindow(QMainWindow):
         with open(path, "r") as f:
             return f.read()
 
-    def create_list_window(self) -> None:
-        self.controller.create_window("list")
-
     def set_theme(self, path: str) -> None:
         if path == "":
             self.controller.set_theme("")
@@ -199,6 +198,5 @@ class DictionaryWindow(QMainWindow):
     # Override
     def closeEvent(self, clost_event: QCloseEvent) -> None:
         self.save()
-        self.controller.close_window(self.window_id)
 
         return super().closeEvent(clost_event)

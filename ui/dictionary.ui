@@ -148,6 +148,7 @@
     </widget>
     <addaction name="menu_theme"/>
     <addaction name="action_list"/>
+    <addaction name="action_flashcard"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_view"/>

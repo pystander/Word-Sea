@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QCloseEvent
 
 from utils.search import bisect_left
 
@@ -77,8 +76,3 @@ class ListWindow(QMainWindow):
             item.setData(Qt.UserRole, vocab)
             item.setText(vocab.word)
             self.list_vocab.addItem(item)
-
-    # Override
-    def closeEvent(self, clost_event: QCloseEvent) -> None:
-        self.controller.close_window(self.window_id)
-        return super().closeEvent(clost_event)

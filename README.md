@@ -14,6 +14,7 @@ It is particularly designed to assist students to learn and memorize new vocabul
 ## Features
 - Support real-time vocabulary look-up
 - Save searched vocabularies and revise later
+- Revise with flashcards (inspired by [Magoosh Vocabulary Flashcards](https://gre.magoosh.com/flashcards/vocabulary))
 - Minimal design with custom themes
 
 
