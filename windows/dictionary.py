@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont, QCloseEvent
 
 from api.cambridge import fetch
-from models.dictionary import Vocabulary, Dictionary
+from models.dictionary import Vocabulary
 
 if TYPE_CHECKING:
     from app import WindowController
@@ -156,11 +156,11 @@ class DictionaryWindow(QMainWindow):
         file_name, _ = dialog.getOpenFileName(self, "QFileDialog.getSaveFileName()", "", "CSV (*.csv)")
 
         if file_name:
-            self.controller.dict = Dictionary()
+            self.controller.dict.reset()
             self.controller.dict.from_csv(file_name)
 
-        self.completer.model().setStringList(self.controller.dict.get_words())
-        self.controller.dict_path = file_name
+            self.completer.model().setStringList(self.controller.dict.get_words())
+            self.controller.dict_path = file_name
 
     def save(self) -> None:
         self.controller.dict.to_csv(self.controller.dict_path)
@@ -175,7 +175,7 @@ class DictionaryWindow(QMainWindow):
             self.controller.dict_path = file_name
 
     def reset(self) -> None:
-        self.controller.dict = Dictionary()
+        self.controller.dict.reset()
         self.list_cluster.clear()
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
@@ -198,6 +198,5 @@ class DictionaryWindow(QMainWindow):
     # Override
     def closeEvent(self, clost_event: QCloseEvent) -> None:
         self.save()
-        self.controller.close_window(self.window_id)
 
         return super().closeEvent(clost_event)

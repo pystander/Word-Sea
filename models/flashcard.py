@@ -1,16 +1,14 @@
 import random
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from models.dictionary import Vocabulary, Dictionary
+from models.dictionary import Vocabulary, Dictionary
 
 
 class FlashCard:
     """
-    An interface for revising saved Vocabulary(s).
+    A model class for revising saved Vocabulary(s).
     """
 
-    def __init__(self, dict: "Dictionary"):
+    def __init__(self, dict: Dictionary) -> None:
         self.learning = set()
         self.learned = set()
         self.is_completed = False
@@ -19,7 +17,10 @@ class FlashCard:
         for vocab in dict.vocabs.values():
             self.learning.add(vocab)
 
-    def get_next_vocab(self) -> "Vocabulary":
+    def get_next_vocab(self) -> Vocabulary:
+        if len(self.learning) == 0:
+            return None
+
         if len(self.learned) == 0:
             return random.choice(list(self.learning))
 
@@ -31,13 +32,13 @@ class FlashCard:
         else:
             return random.choice(list(self.learned))
 
-    def learn(self, vocab: "Vocabulary") -> None:
+    def learn(self, vocab: Vocabulary) -> None:
         self.learned.add(vocab)
         self.learning.discard(vocab)
 
         if len(self.learning) == 0:
             self.is_completed = True
 
-    def unlearn(self, vocab: "Vocabulary") -> None:
+    def unlearn(self, vocab: Vocabulary) -> None:
         self.learning.add(vocab)
         self.learned.discard(vocab)

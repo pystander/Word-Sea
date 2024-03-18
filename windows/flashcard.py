@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont, QCloseEvent
+from PyQt5.QtGui import QFont
 
 from models.flashcard import FlashCard
 
@@ -55,6 +55,9 @@ class FlashCardWindow(QMainWindow):
         self.progress_learned.setValue(len(self.flashcard.learned))
 
     def show_vocab(self) -> None:
+        if self.vocab is None:
+            return
+
         font = QFont()
         font.setBold(True)
 
@@ -96,9 +99,3 @@ class FlashCardWindow(QMainWindow):
 
             item.setText(cluster_text)
             self.list_cluster.addItem(item)
-
-    # Override
-    def closeEvent(self, clost_event: QCloseEvent) -> None:
-        self.controller.close_window(self.window_id)
-
-        return super().closeEvent(clost_event)
