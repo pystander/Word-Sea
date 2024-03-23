@@ -10,7 +10,7 @@ class Settings:
     def __init__(self):
         self.settings = {}
 
-    def add_setting(self, key: str, value: str) -> None:
+    def set_setting(self, key: str, value: str) -> None:
         self.settings[key] = value
 
     def get_setting(self, key: str) -> str | None:

@@ -18,7 +18,7 @@ class WindowController:
 
     def __init__(self, dict_path: str, settings_path: str) -> None:
         self.dict_path = dict_path
-        self.stylesheet = ""
+        self.settings_path = settings_path
         self.windows = {}
 
         self.dict = Dictionary()
@@ -38,19 +38,18 @@ class WindowController:
     def create_window(self, id: str) -> None:
         window = WINDOW_CLASSES[id](self)
         self.windows[window.window_id] = window
-        window.setStyleSheet(self.stylesheet)
+        self.call(window.window_id, "set_theme", self.settings.get_setting("qss_path"))
 
         window.show()
 
     def close_window(self, id: str) -> None:
-        print(self.windows)
-
         if id in self.windows:
             self.windows[id].close()
             del self.windows[id]
 
-        print(self.windows)
+        if len(self.windows) == 0:
+            self.settings.to_csv(self.settings_path)
 
-    def set_theme(self, qss="") -> None:
-        self.stylesheet = qss
-        self.broadcast("setStyleSheet", qss)
+    def set_theme(self, qss_path: str) -> None:
+        self.settings.set_setting("qss_path", qss_path)
+        self.broadcast("set_theme", self.settings.get_setting("qss_path"))
