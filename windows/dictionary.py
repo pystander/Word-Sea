@@ -7,18 +7,16 @@ from PyQt5.QtGui import QFont, QCloseEvent
 
 from api.cambridge import fetch
 from models.dictionary import Vocabulary
+from windows.window import Window
 
 if TYPE_CHECKING:
     from app import WindowController
 
 
-class DictionaryWindow(QMainWindow):
+class DictionaryWindow(Window):
     def __init__(self, controller: "WindowController", window_id="dict") -> None:
-        super(DictionaryWindow, self).__init__()
+        super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
-
-        self.controller = controller
-        self.window_id = window_id
 
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
@@ -55,8 +53,8 @@ class DictionaryWindow(QMainWindow):
         self.action_list = self.findChild(QAction, "action_list")
         self.action_flashcard = self.findChild(QAction, "action_flashcard")
 
-        self.action_theme_default.triggered.connect(lambda: self.set_theme(""))
-        self.action_theme_dark.triggered.connect(lambda: self.set_theme("qss/dark.qss"))
+        self.action_theme_default.triggered.connect(lambda: self.controller.set_theme(""))
+        self.action_theme_dark.triggered.connect(lambda: self.controller.set_theme("qss/dark.qss"))
         self.action_list.triggered.connect(lambda: self.controller.create_window("list"))
         self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
 
@@ -184,19 +182,7 @@ class DictionaryWindow(QMainWindow):
         if "list" in self.controller.windows:
             self.controller.windows["list"].clear_item()
 
-    def read_qss(self, path: str) -> str:
-        with open(path, "r") as f:
-            return f.read()
-
-    def set_theme(self, path: str) -> None:
-        if path == "":
-            self.controller.set_theme("")
-        else:
-            qss = self.read_qss(path)
-            self.controller.set_theme(qss)
-
     # Override
-    def closeEvent(self, clost_event: QCloseEvent) -> None:
+    def closeEvent(self, close_event: QCloseEvent) -> None:
         self.save()
-
-        return super().closeEvent(clost_event)
+        return super().closeEvent(close_event)
