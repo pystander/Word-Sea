@@ -49,7 +49,7 @@ class Dictionary:
         self.vocabs.clear()
 
     def to_csv(self, path: str, delim: str = "|") -> None:
-        with open(path, "w+", newline="", encoding="utf-8") as f:
+        with open(path, "w+", newline="", encoding="cp1252") as f:
             fields = ["word", "pos", "meanings", "examples", "synonyms", "antonyms", "related"]
             writer = csv.writer(f, fields)
 
@@ -69,7 +69,7 @@ class Dictionary:
         if not os.path.exists(path):
             return
 
-        with open(path, "r", newline="", encoding="utf-8") as f:
+        with open(path, "r", newline="", encoding="cp1252") as f:
             reader = csv.reader(f)
 
             for row in reader:

@@ -162,5 +162,8 @@ cython_debug/
 # Dictionary data
 data/*.csv
 
+# NLP training data
+nlp/data
+
 # Testing
 test.py
