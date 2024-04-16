@@ -54,7 +54,7 @@ class DictionaryWindow(Window):
         self.action_flashcard = self.findChild(QAction, "action_flashcard")
 
         self.action_theme_default.triggered.connect(lambda: self.controller.set_theme(""))
-        self.action_theme_dark.triggered.connect(lambda: self.controller.set_theme("qss/dark.qss"))
+        self.action_theme_dark.triggered.connect(lambda: self.controller.set_theme("ui/qss/dark.qss"))
         self.action_list.triggered.connect(lambda: self.controller.create_window("list"))
         self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
 
