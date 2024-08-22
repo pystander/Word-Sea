@@ -53,7 +53,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>I didn't knew this word</string>
+     <string>I didn't know this word</string>
     </property>
     <property name="autoDefault">
      <bool>false</bool>
