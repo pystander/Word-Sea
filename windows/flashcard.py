@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont, QCloseEvent
+from PyQt5.QtGui import QFont, QIcon
 
 from models.flashcard import FlashCard
 from windows.window import Window
@@ -19,6 +19,9 @@ class FlashCardWindow(Window):
 
         self.flashcard = FlashCard(self.controller.dict)
         self.vocab = self.flashcard.get_next_vocab()
+
+        # Window settings
+        self.setWindowIcon(QIcon("ui/icons/mingcute--board-line.png"))
 
         # Widgets
         self.button_learn = self.findChild(QPushButton, "button_learn")

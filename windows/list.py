@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import QIcon
 
 from utils.search import bisect_left
 from windows.window import Window
@@ -16,6 +16,9 @@ class ListWindow(Window):
     def __init__(self, controller: "WindowController", window_id="list") -> None:
         super(ListWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/list.ui", self)
+
+        # Window settings
+        self.setWindowIcon(QIcon("ui/icons/uil--list-ul.png"))
 
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
