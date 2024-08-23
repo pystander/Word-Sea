@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QFont, QCloseEvent
+from PyQt5.QtGui import QFont, QCloseEvent, QIcon
 
 from api.cambridge import fetch
 from models.dictionary import Vocabulary
@@ -17,6 +17,9 @@ class DictionaryWindow(Window):
     def __init__(self, controller: "WindowController", window_id="dict") -> None:
         super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
+
+        # Window settings
+        self.setWindowIcon(QIcon("ui/icons/uil--book-reader.png"))
 
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
@@ -47,19 +50,35 @@ class DictionaryWindow(Window):
 
         self.action_save.setShortcut("Ctrl+S")
 
+        self.action_open.setIcon(QIcon("ui/icons/uil--folder-open.png"))
+        self.action_save.setIcon(QIcon("ui/icons/bx--save.png"))
+        self.action_save_as.setIcon(QIcon("ui/icons/bxs--save.png"))
+        self.action_reset.setIcon(QIcon("ui/icons/uil--trash-alt.png"))
+
         # View menu
         self.action_theme_default = self.findChild(QAction, "action_theme_default")
         self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
         self.action_list = self.findChild(QAction, "action_list")
         self.action_flashcard = self.findChild(QAction, "action_flashcard")
+        self.action_import_qss = self.findChild(QAction, "action_import_qss")
 
         self.action_theme_default.triggered.connect(lambda: self.controller.set_theme(""))
         self.action_theme_dark.triggered.connect(lambda: self.controller.set_theme("ui/qss/dark.qss"))
         self.action_list.triggered.connect(lambda: self.controller.create_window("list"))
         self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
+        self.action_import_qss.triggered.connect(lambda: self.import_qss())
+
+        self.menu_theme = self.findChild(QMenu, "menu_theme")
+        self.menu_theme.setIcon(QIcon("ui/icons/uil--brush-alt.png"))
+        self.action_list.setIcon(QIcon("ui/icons/uil--list-ul.png"))
+        self.action_flashcard.setIcon(QIcon("ui/icons/mingcute--board-line.png"))
+        self.action_import_qss.setIcon(QIcon("ui/icons/uil--import.png"))
 
         # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
+
+        # Disable resizing
+        self.setFixedSize(self.size())
 
     def search(self) -> None:
         word = self.line_input.text()
@@ -151,7 +170,7 @@ class DictionaryWindow(Window):
     def open(self) -> None:
         dialog = QFileDialog()
         dialog.setDefaultSuffix("csv")
-        file_name, _ = dialog.getOpenFileName(self, "QFileDialog.getSaveFileName()", "", "CSV (*.csv)")
+        file_name, _ = dialog.getOpenFileName(self, "Open", "", "CSV (*.csv)")
 
         if file_name:
             self.controller.dict.reset()
@@ -166,7 +185,7 @@ class DictionaryWindow(Window):
     def save_as(self) -> None:
         dialog = QFileDialog()
         dialog.setDefaultSuffix("csv")
-        file_name, _ = dialog.getSaveFileName(self, "QFileDialog.getSaveFileName()", "", "CSV (*.csv)")
+        file_name, _ = dialog.getSaveFileName(self, "Save", "", "CSV (*.csv)")
 
         if file_name:
             self.controller.dict.to_csv(file_name)
@@ -181,6 +200,14 @@ class DictionaryWindow(Window):
 
         if "list" in self.controller.windows:
             self.controller.windows["list"].clear_item()
+
+    def import_qss(self) -> None:
+        dialog = QFileDialog()
+        dialog.setDefaultSuffix("qss")
+        file_name, _ = dialog.getOpenFileName(self, "Import", "", "Qt Style Sheet (*.qss)")
+
+        if file_name:
+            self.controller.set_theme(file_name)
 
     # Override
     def closeEvent(self, close_event: QCloseEvent) -> None:
