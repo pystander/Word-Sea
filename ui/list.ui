@@ -13,36 +13,44 @@
   <property name="windowTitle">
    <string>List</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icons/uil--list-ul.png</normaloff>icons/uil--list-ul.png</iconset>
+  </property>
   <widget class="QWidget" name="widget_central">
-   <widget class="QListWidget" name="list_vocab">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>281</width>
-      <height>511</height>
-     </rect>
+   <layout class="QVBoxLayout" name="layout_main">
+    <property name="spacing">
+     <number>6</number>
     </property>
-   </widget>
-   <widget class="QLineEdit" name="line_input">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>151</width>
-      <height>21</height>
-     </rect>
+    <property name="leftMargin">
+     <number>9</number>
     </property>
-    <property name="text">
-     <string/>
+    <property name="topMargin">
+     <number>9</number>
     </property>
-    <property name="placeholderText">
-     <string>Enter a vocabulary</string>
+    <property name="rightMargin">
+     <number>9</number>
     </property>
-    <property name="clearButtonEnabled">
-     <bool>true</bool>
+    <property name="bottomMargin">
+     <number>9</number>
     </property>
-   </widget>
+    <item>
+     <widget class="QLineEdit" name="line_input">
+      <property name="text">
+       <string/>
+      </property>
+      <property name="placeholderText">
+       <string>Enter a vocabulary</string>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListWidget" name="list_vocab"/>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
