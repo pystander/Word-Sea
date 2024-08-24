@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>icons/uil--list-ul.png</normaloff>icons/uil--list-ul.png</iconset>
+    <normaloff>icons/fluent-emoji-flat--file-cabinet.png</normaloff>icons/fluent-emoji-flat--file-cabinet.png</iconset>
   </property>
   <widget class="QWidget" name="widget_central">
    <layout class="QVBoxLayout" name="layout_main">
