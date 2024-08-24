@@ -18,9 +18,6 @@ class DictionaryWindow(Window):
         super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
 
-        # Window settings
-        self.setWindowIcon(QIcon("ui/icons/uil--book-reader.png"))
-
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
         self.button_search = self.findChild(QPushButton, "button_search")
@@ -50,11 +47,6 @@ class DictionaryWindow(Window):
 
         self.action_save.setShortcut("Ctrl+S")
 
-        self.action_open.setIcon(QIcon("ui/icons/uil--folder-open.png"))
-        self.action_save.setIcon(QIcon("ui/icons/bx--save.png"))
-        self.action_save_as.setIcon(QIcon("ui/icons/bxs--save.png"))
-        self.action_reset.setIcon(QIcon("ui/icons/uil--trash-alt.png"))
-
         # View menu
         self.action_theme_default = self.findChild(QAction, "action_theme_default")
         self.action_theme_dark = self.findChild(QAction, "action_theme_dark")
@@ -68,17 +60,8 @@ class DictionaryWindow(Window):
         self.action_flashcard.triggered.connect(lambda: self.controller.create_window("flashcard"))
         self.action_import_qss.triggered.connect(lambda: self.import_qss())
 
-        self.menu_theme = self.findChild(QMenu, "menu_theme")
-        self.menu_theme.setIcon(QIcon("ui/icons/uil--brush-alt.png"))
-        self.action_list.setIcon(QIcon("ui/icons/uil--list-ul.png"))
-        self.action_flashcard.setIcon(QIcon("ui/icons/mingcute--board-line.png"))
-        self.action_import_qss.setIcon(QIcon("ui/icons/uil--import.png"))
-
         # Window settings
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-
-        # Disable resizing
-        self.setFixedSize(self.size())
 
     def search(self) -> None:
         word = self.line_input.text()
@@ -192,6 +175,17 @@ class DictionaryWindow(Window):
             self.controller.dict_path = file_name
 
     def reset(self) -> None:
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setWindowTitle("Reset")
+        msg_box.setWindowIcon(QIcon("ui/icons/uil--trash-alt.png"))
+        msg_box.setText("Are you sure you want to reset the dictionary?")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg_box.setWindowFlags(Qt.WindowStaysOnTopHint)
+
+        if msg_box.exec() == QMessageBox.No:
+            return
+
         self.controller.dict.reset()
         self.list_cluster.clear()
         self.completer = QCompleter(self.controller.dict.get_words())

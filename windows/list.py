@@ -17,9 +17,6 @@ class ListWindow(Window):
         super(ListWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/list.ui", self)
 
-        # Window settings
-        self.setWindowIcon(QIcon("ui/icons/uil--list-ul.png"))
-
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
         self.list_vocab = self.findChild(QListWidget, "list_vocab")

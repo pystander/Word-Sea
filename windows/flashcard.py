@@ -20,9 +20,6 @@ class FlashCardWindow(Window):
         self.flashcard = FlashCard(self.controller.dict)
         self.vocab = self.flashcard.get_next_vocab()
 
-        # Window settings
-        self.setWindowIcon(QIcon("ui/icons/mingcute--board-line.png"))
-
         # Widgets
         self.button_learn = self.findChild(QPushButton, "button_learn")
         self.button_unlearn = self.findChild(QPushButton, "button_unlearn")
