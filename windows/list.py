@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QIcon
 
 from utils.search import bisect_left
 from windows.window import Window

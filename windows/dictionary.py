@@ -178,7 +178,7 @@ class DictionaryWindow(Window):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
         msg_box.setWindowTitle("Reset")
-        msg_box.setWindowIcon(QIcon("ui/icons/uil--trash-alt.png"))
+        msg_box.setWindowIcon(QIcon("ui/icons/fluent-emoji-flat--broom"))
         msg_box.setText("Are you sure you want to reset the dictionary?")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         msg_box.setWindowFlags(Qt.WindowStaysOnTopHint)
