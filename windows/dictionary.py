@@ -25,6 +25,7 @@ class DictionaryWindow(Window):
         self.button_remove = self.findChild(QPushButton, "button_remove")
         self.checkbox_learn = self.findChild(QCheckBox, "checkbox_learn")
         self.list_cluster = self.findChild(QListWidget, "list_cluster")
+        self.status_bar = self.findChild(QStatusBar, "status_bar")
 
         self.line_input.returnPressed.connect(self.search)
         self.button_search.clicked.connect(self.search)
@@ -164,6 +165,7 @@ class DictionaryWindow(Window):
 
     def save(self) -> None:
         self.controller.dict.to_csv(self.controller.dict_path)
+        self.status_bar.showMessage("File saved to %s" % self.controller.dict_path)
 
     def save_as(self) -> None:
         dialog = QFileDialog()
@@ -173,6 +175,7 @@ class DictionaryWindow(Window):
         if file_name:
             self.controller.dict.to_csv(file_name)
             self.controller.dict_path = file_name
+            self.status_bar.showMessage("File saved to %s" % file_name)
 
     def reset(self) -> None:
         msg_box = QMessageBox()
@@ -187,6 +190,8 @@ class DictionaryWindow(Window):
             return
 
         self.controller.dict.reset()
+        self.status_bar.showMessage("Dictionary reset")
+
         self.list_cluster.clear()
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
@@ -202,6 +207,10 @@ class DictionaryWindow(Window):
 
         if file_name:
             self.controller.set_theme(file_name)
+            self.show_status("QSS imported")
+
+    def show_status(self, message: str) -> None:
+        self.status_bar.showMessage(message)
 
     # Override
     def closeEvent(self, close_event: QCloseEvent) -> None:

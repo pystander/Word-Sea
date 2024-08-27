@@ -5,7 +5,8 @@ from PyQt5.QtWidgets import QApplication
 
 from controllers.window import WindowController
 
-DATA_DIR = "data/"
+OS_PATH = os.path.dirname(__file__)
+DATA_DIR = OS_PATH + "data\\"
 DICT_PATH = DATA_DIR + "dictionary.csv"
 SETTINGS_PATH = DATA_DIR + "settings.csv"
 
