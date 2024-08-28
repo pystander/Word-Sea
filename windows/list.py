@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QLineEdit, QListWidget, QListWidgetItem
 
 from utils.search import bisect_left
 from windows.window import Window
@@ -12,6 +12,10 @@ if TYPE_CHECKING:
 
 
 class ListWindow(Window):
+    """
+    A window for listing all saved words in the dictionary.
+    """
+
     def __init__(self, controller: "WindowController", window_id="list") -> None:
         super(ListWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/list.ui", self)

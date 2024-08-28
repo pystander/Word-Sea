@@ -1,4 +1,4 @@
-from models.cluster import Cluster
+from models.vocab.cluster import Cluster
 
 
 class Vocabulary:

@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING
 
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QCloseEvent
 
 if TYPE_CHECKING:
-    from controllers.window import WindowController
+    from app import WindowController
 
 
 class Window(QMainWindow):

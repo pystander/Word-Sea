@@ -2,7 +2,7 @@ import os
 import csv
 
 from utils.search import bisect_left
-from models.vocabulary import Cluster, Vocabulary
+from models.vocab.vocabulary import Cluster, Vocabulary
 
 
 class Dictionary:
@@ -49,31 +49,32 @@ class Dictionary:
         self.vocabs.clear()
 
     def to_csv(self, path: str, delim: str = "|") -> None:
-        with open(path, "w+", newline="", encoding="cp1252") as f:
-            fields = ["word", "pos", "meanings", "examples", "synonyms", "antonyms", "related"]
+        with open(path, "w+", newline="", encoding="utf-8") as f:
+            fields = ["word", "pos", "pronunciation", "meanings", "examples", "synonyms", "antonyms", "related"]
             writer = csv.writer(f, fields)
 
             for word in self.vocabs:
                 vocab = self.vocabs[word]
 
                 for pos, cluster in vocab.clusters.items():
+                    pronunciation = cluster.pronunciation
                     meanings = delim.join(cluster.meanings)
                     examples = delim.join(cluster.examples)
                     synonyms = delim.join(cluster.synonyms)
                     antonyms = delim.join(cluster.antonyms)
                     related = delim.join(cluster.related)
 
-                    writer.writerow([word, pos, meanings, examples, synonyms, antonyms, related])
+                    writer.writerow([word, pos, pronunciation, meanings, examples, synonyms, antonyms, related])
 
     def from_csv(self, path: str, delim: str = "|") -> None:
         if not os.path.exists(path):
             return
 
-        with open(path, "r", newline="", encoding="cp1252") as f:
+        with open(path, "r", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
 
             for row in reader:
-                word, pos, meanings, examples, synonyms, antonyms, related = row
+                word, pos, pronunciation, meanings, examples, synonyms, antonyms, related = row
                 meanings = meanings.split(delim)
                 examples = examples.split(delim)
                 synonyms = synonyms.split(delim)
@@ -85,5 +86,5 @@ class Dictionary:
                 if vocab == None:
                     vocab = Vocabulary(word)
 
-                vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
+                vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related))
                 self.add_vocab(vocab)

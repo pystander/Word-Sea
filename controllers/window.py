@@ -1,5 +1,5 @@
-from models.dictionary import Dictionary
-from models.settings import Settings
+from models.vocab.dictionary import Dictionary
+from models.config.settings import Settings
 from windows.dictionary import DictionaryWindow
 from windows.list import ListWindow
 from windows.flashcard import FlashCardWindow
