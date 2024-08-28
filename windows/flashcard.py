@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QPushButton, QListWidget, QListWidgetItem, QProgressBar
 from PyQt5.QtGui import QFont
 
-from models.flashcard import FlashCard
+from models.vocab.flashcard import FlashCard
 from windows.window import Window
 
 if TYPE_CHECKING:
@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 
 
 class FlashCardWindow(Window):
+    """
+    A window for learning words using flashcards.
+    """
+
     def __init__(self, controller: "WindowController", window_id="flashcard") -> None:
         super(FlashCardWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/flashcard.ui", self)
@@ -67,6 +71,7 @@ class FlashCardWindow(Window):
         self.list_cluster.addItem(item)
 
         for pos, cluster in self.vocab.clusters.items():
+            pronunciation = cluster.pronunciation
             meanings = cluster.meanings
             examples = cluster.examples
             synonyms = cluster.synonyms
@@ -75,7 +80,7 @@ class FlashCardWindow(Window):
 
             item = QListWidgetItem()
 
-            cluster_text = pos + "\n"
+            cluster_text = pos + "\n" + pronunciation + "\n\n"
 
             for i, meaning in enumerate(meanings):
                 cluster_text += "%d. %s" % (i + 1, meaning) + "\n"

@@ -1,6 +1,6 @@
 import random
 
-from models.dictionary import Vocabulary, Dictionary
+from models.vocab.dictionary import Vocabulary, Dictionary
 
 
 class FlashCard:

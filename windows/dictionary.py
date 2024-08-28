@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QCheckBox, QListWidget, QListWidgetItem, QStatusBar, QAction, QFileDialog, QMessageBox, QCompleter
 from PyQt5.QtGui import QFont, QCloseEvent, QIcon
 
 from api.cambridge import fetch
-from models.dictionary import Vocabulary
+from models.vocab.dictionary import Vocabulary
 from windows.window import Window
 
 if TYPE_CHECKING:
@@ -14,6 +14,10 @@ if TYPE_CHECKING:
 
 
 class DictionaryWindow(Window):
+    """
+    A window for searching words in the dictionary. Act as the main window.
+    """
+
     def __init__(self, controller: "WindowController", window_id="dict") -> None:
         super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
@@ -118,6 +122,7 @@ class DictionaryWindow(Window):
         self.list_cluster.addItem(item)
 
         for pos, cluster in vocab.clusters.items():
+            pronunciation = cluster.pronunciation
             meanings = cluster.meanings
             examples = cluster.examples
             synonyms = cluster.synonyms
@@ -126,7 +131,7 @@ class DictionaryWindow(Window):
 
             item = QListWidgetItem()
 
-            cluster_text = pos + "\n"
+            cluster_text = pos + "\n" + pronunciation + "\n"
 
             for i, meaning in enumerate(meanings):
                 cluster_text += "%d. %s" % (i + 1, meaning) + "\n"

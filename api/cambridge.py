@@ -3,7 +3,7 @@ import re
 
 from bs4 import BeautifulSoup
 
-from models.dictionary import Cluster, Vocabulary
+from models.vocab.dictionary import Cluster, Vocabulary
 
 BASE_URL = "https://dictionary.cambridge.org/dictionary/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"}
@@ -34,6 +34,8 @@ def fetch(search_word: str, trans: str = "english") -> Vocabulary | None:
                 vocab.word = word
 
             pos = entry.find("span", class_="pos dpos").text
+            pronunciation = entry.find("span", class_="pron dpron").text
+
             gram = entry.find("span", class_="gram dgram")
 
             if gram is not None:
@@ -112,7 +114,7 @@ def fetch(search_word: str, trans: str = "english") -> Vocabulary | None:
                 if dexamp:
                     examples.append(dexamp.text.lstrip().rstrip(": ").replace("\n", ""))
 
-            vocab.add_cluster(pos, Cluster(meanings, examples, synonyms, antonyms, related))
+            vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related))
 
         return vocab
 
