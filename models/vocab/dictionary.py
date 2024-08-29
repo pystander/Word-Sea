@@ -50,7 +50,7 @@ class Dictionary:
 
     def to_csv(self, path: str, delim: str = "|") -> None:
         with open(path, "w+", newline="", encoding="utf-8") as f:
-            fields = ["word", "pos", "pronunciation", "meanings", "examples", "synonyms", "antonyms", "related"]
+            fields = ["word", "pos", "pronunciation", "meanings", "examples", "synonyms", "antonyms", "related", "audio_source"]
             writer = csv.writer(f, fields)
 
             for word in self.vocabs:
@@ -63,8 +63,9 @@ class Dictionary:
                     synonyms = delim.join(cluster.synonyms)
                     antonyms = delim.join(cluster.antonyms)
                     related = delim.join(cluster.related)
+                    audio_source = cluster.audio_source
 
-                    writer.writerow([word, pos, pronunciation, meanings, examples, synonyms, antonyms, related])
+                    writer.writerow([word, pos, pronunciation, meanings, examples, synonyms, antonyms, related, audio_source])
 
     def from_csv(self, path: str, delim: str = "|") -> None:
         if not os.path.exists(path):
@@ -74,7 +75,7 @@ class Dictionary:
             reader = csv.reader(f)
 
             for row in reader:
-                word, pos, pronunciation, meanings, examples, synonyms, antonyms, related = row
+                word, pos, pronunciation, meanings, examples, synonyms, antonyms, related, audio_source = row
                 meanings = meanings.split(delim)
                 examples = examples.split(delim)
                 synonyms = synonyms.split(delim)
@@ -86,5 +87,5 @@ class Dictionary:
                 if vocab == None:
                     vocab = Vocabulary(word)
 
-                vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related))
+                vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related, audio_source))
                 self.add_vocab(vocab)

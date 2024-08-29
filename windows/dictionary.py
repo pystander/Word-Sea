@@ -4,10 +4,12 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QLineEdit, QPushButton, QCheckBox, QListWidget, QListWidgetItem, QStatusBar, QAction, QFileDialog, QMessageBox, QCompleter
 from PyQt5.QtGui import QFont, QCloseEvent, QIcon
+from playsound import playsound
 
-from api.cambridge import fetch
+from api.cambridge import fetch, BASE_URL
 from models.vocab.dictionary import Vocabulary
 from windows.window import Window
+
 
 if TYPE_CHECKING:
     from app import WindowController
@@ -38,6 +40,7 @@ class DictionaryWindow(Window):
 
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
+        self.list_cluster.itemClicked.connect(self.play_audio)
 
         # File menu
         self.action_open = self.findChild(QAction, "action_open")
@@ -128,6 +131,7 @@ class DictionaryWindow(Window):
             synonyms = cluster.synonyms
             antonyms = cluster.antonyms
             related = cluster.related
+            audio_source = cluster.audio_source
 
             item = QListWidgetItem()
 
@@ -152,6 +156,7 @@ class DictionaryWindow(Window):
                 cluster_text += "\n" + "Related: " + ', '.join(related) + "\n"
 
             item.setText(cluster_text)
+            item.setData(Qt.UserRole, audio_source)
             self.list_cluster.addItem(item)
 
         self.controller.dict.sort()
@@ -216,6 +221,12 @@ class DictionaryWindow(Window):
 
     def show_status(self, message: str) -> None:
         self.status_bar.showMessage(message)
+
+    def play_audio(self, item: QListWidgetItem) -> None:
+        audio_source = item.data(Qt.UserRole)
+
+        if audio_source != None:
+            playsound(BASE_URL + audio_source)
 
     # Override
     def closeEvent(self, close_event: QCloseEvent) -> None:
