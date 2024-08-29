@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 
 from models.vocab.dictionary import Cluster, Vocabulary
 
-BASE_URL = "https://dictionary.cambridge.org/dictionary/"
+BASE_URL = "https://dictionary.cambridge.org/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0"}
 
 
@@ -15,7 +15,7 @@ def fetch(search_word: str, trans: str = "english") -> Vocabulary | None:
     """
 
     try:
-        res = requests.get(BASE_URL + trans + "/" + search_word, headers=HEADERS)
+        res = requests.get(BASE_URL + "dictionary/" + trans + "/" + search_word, headers=HEADERS)
         soup = BeautifulSoup(res.text, "html.parser")
 
         # Only include definitions from the first dictionary
@@ -35,6 +35,8 @@ def fetch(search_word: str, trans: str = "english") -> Vocabulary | None:
 
             pos = entry.find("span", class_="pos dpos").text
             pronunciation = entry.find("span", class_="pron dpron").text
+            audio = entry.find("audio", class_="hdn")
+            audio_source = audio.find("source").get("src")
 
             gram = entry.find("span", class_="gram dgram")
 
@@ -114,7 +116,7 @@ def fetch(search_word: str, trans: str = "english") -> Vocabulary | None:
                 if dexamp:
                     examples.append(dexamp.text.lstrip().rstrip(": ").replace("\n", ""))
 
-            vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related))
+            vocab.add_cluster(pos, Cluster(pronunciation, meanings, examples, synonyms, antonyms, related, audio_source))
 
         return vocab
 

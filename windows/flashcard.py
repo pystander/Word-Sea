@@ -4,7 +4,9 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QPushButton, QListWidget, QListWidgetItem, QProgressBar
 from PyQt5.QtGui import QFont
+from playsound import playsound
 
+from api.cambridge import BASE_URL
 from models.vocab.flashcard import FlashCard
 from windows.window import Window
 
@@ -32,6 +34,7 @@ class FlashCardWindow(Window):
 
         self.button_learn.clicked.connect(lambda: self.progress(True))
         self.button_unlearn.clicked.connect(lambda: self.progress(False))
+        self.list_cluster.itemClicked.connect(self.play_audio)
 
         self.progress_learned.setRange(0, len(self.flashcard.learning))
         self.progress_learned.setValue(0)
@@ -77,6 +80,7 @@ class FlashCardWindow(Window):
             synonyms = cluster.synonyms
             antonyms = cluster.antonyms
             related = cluster.related
+            audio_source = cluster.audio_source
 
             item = QListWidgetItem()
 
@@ -101,4 +105,11 @@ class FlashCardWindow(Window):
                 cluster_text += "\n" + "Related: " + ', '.join(related) + "\n"
 
             item.setText(cluster_text)
+            item.setData(Qt.UserRole, audio_source)
             self.list_cluster.addItem(item)
+
+    def play_audio(self, item: QListWidgetItem) -> None:
+        audio_source = item.data(Qt.UserRole)
+
+        if audio_source != None:
+            playsound(BASE_URL + audio_source)
