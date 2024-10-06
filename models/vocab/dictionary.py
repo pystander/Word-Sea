@@ -52,6 +52,7 @@ class Dictionary:
         with open(path, "w+", newline="", encoding="utf-8") as f:
             fields = ["word", "pos", "pronunciation", "meanings", "examples", "synonyms", "antonyms", "related", "audio_source"]
             writer = csv.writer(f, fields)
+            writer.writerow(fields)
 
             for word in self.vocabs:
                 vocab = self.vocabs[word]
@@ -73,6 +74,7 @@ class Dictionary:
 
         with open(path, "r", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
+            next(reader)
 
             for row in reader:
                 word, pos, pronunciation, meanings, examples, synonyms, antonyms, related, audio_source = row
