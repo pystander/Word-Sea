@@ -2,12 +2,13 @@ from typing import TYPE_CHECKING
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QLineEdit, QPushButton, QCheckBox, QListWidget, QListWidgetItem, QStatusBar, QAction, QFileDialog, QMessageBox, QCompleter
-from PyQt5.QtGui import QFont, QCloseEvent, QIcon
+from PyQt5.QtWidgets import QLineEdit, QPushButton, QCheckBox, QListWidget, QListWidgetItem, QStatusBar, QAction, QFileDialog, QMessageBox, QCompleter, QShortcut
+from PyQt5.QtGui import QFont, QCloseEvent, QIcon, QKeySequence
 from playsound import playsound
 
 from api.cambridge import fetch, BASE_URL
 from models.vocab.dictionary import Vocabulary
+from models.record.history import Action, History
 from windows.window import Window
 
 
@@ -23,6 +24,9 @@ class DictionaryWindow(Window):
     def __init__(self, controller: "WindowController", window_id="dict") -> None:
         super(DictionaryWindow, self).__init__(controller, window_id)
         uic.loadUi("ui/dictionary.ui", self)
+
+        # Action history
+        self.action_history = History()
 
         # Widgets
         self.line_input = self.findChild(QLineEdit, "line_input")
@@ -41,6 +45,9 @@ class DictionaryWindow(Window):
         self.completer = QCompleter(self.controller.dict.get_words())
         self.line_input.setCompleter(self.completer)
         self.list_cluster.itemClicked.connect(self.play_audio)
+
+        self.shortcut_undo = QShortcut(QKeySequence("Ctrl+Z"), self.line_input)
+        self.shortcut_undo.activated.connect(self.undo)
 
         # File menu
         self.action_open = self.findChild(QAction, "action_open")
@@ -92,6 +99,8 @@ class DictionaryWindow(Window):
                 if "list" in self.controller.windows:
                     self.controller.windows["list"].add_item(vocab.word)
 
+                self.action_history.add(Action.ADD, vocab)
+
         self.show_vocab(vocab)
 
     def clear(self) -> None:
@@ -103,6 +112,8 @@ class DictionaryWindow(Window):
             return
 
         word = self.list_cluster.item(0).text()
+        vocab = self.controller.dict.get_vocab(word)
+
         self.controller.dict.remove_word(word)
         self.completer.model().setStringList(self.controller.dict.get_words())
 
@@ -112,6 +123,8 @@ class DictionaryWindow(Window):
         if "list" in self.controller.windows:
             window_list = self.controller.windows["list"]
             window_list.remove_item(word)
+
+        self.action_history.add(Action.REMOVE, vocab)
 
     def show_vocab(self, vocab: Vocabulary) -> None:
         font = QFont()
@@ -227,6 +240,32 @@ class DictionaryWindow(Window):
 
         if audio_source != None:
             playsound(BASE_URL + audio_source)
+
+    def undo(self) -> None:
+        record = self.action_history.pop()
+
+        if record == None:
+            return
+
+        action, vocab = record
+
+        if action == Action.ADD:
+            self.controller.dict.remove_word(vocab.word)
+            self.completer.model().setStringList(self.controller.dict.get_words())
+
+            if "list" in self.controller.windows:
+                self.controller.windows["list"].remove_item(vocab.word)
+
+            self.clear()
+
+        elif action == Action.REMOVE:
+            self.controller.dict.add_vocab(vocab)
+            self.completer.model().setStringList(self.controller.dict.get_words())
+
+            if "list" in self.controller.windows:
+                self.controller.windows["list"].add_item(vocab.word)
+
+            self.show_vocab(vocab)
 
     # Override
     def closeEvent(self, close_event: QCloseEvent) -> None:
